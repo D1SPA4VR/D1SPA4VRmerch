@@ -47,11 +47,106 @@
     button:hover {
       background-color: #ff1a4d;
     }
+
+    /* ✅ Neon popup */
+    #popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: black;
+      color: #ff0033;
+      border: 2px solid #ff0033;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #ff0033;
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
   <h1>D1SPA4VR Merch</h1>
 
-  <!-- ✅ Product 1 -->
   <div class="product" data-name="Sticker Pack 10">
-    <h2>🧃
+    <h2>🎨 Sticker Pack 10 - $10.00</h2>
+    <button class="buy-btn">Buy Now</button>
+  </div>
+
+  <div class="product" data-name="Sticker Pack 8">
+    <h2>🖼️ Sticker Pack 8 - $8.00</h2>
+    <button class="buy-btn">Buy Now</button>
+  </div>
+
+  <div class="product" data-name="Sticker Pack 4">
+    <h2>🧷 Sticker Pack 4 - $4.00</h2>
+    <button class="buy-btn">Buy Now</button>
+  </div>
+
+  <div class="product" data-name="Custom Pencil">
+    <h2>✏️ Custom Pencil - $5.00</h2>
+    <button class="buy-btn">Buy Now</button>
+  </div>
+
+  <div class="product" data-name="Bookmark">
+    <h2>🔖 Bookmark - $3.00</h2>
+    <button class="buy-btn">Buy Now</button>
+  </div>
+
+  <div class="product" data-name="Test Item (Free)">
+    <h2>🆓 Test Item (Free) - $0.00</h2>
+    <button class="buy-btn">Buy Now</button>
+  </div>
+
+  <div class="product" data-name="Test Product">
+    <h2>🛠️ Test Product - $12.34</h2>
+    <button class="buy-btn">Buy Now</button>
+  </div>
+
+  <!-- ✅ Popup message -->
+  <div id="popup">🚧 Coming Soon 🚧</div>
+
+  <script>
+    const stripe = Stripe('pk_test_51RjAiwGb9EZbdjJJJxWfv843uVJSQYzhpWq7kN0OrC7AGHkPUgrWbXKeTQYIsbItu4jrHBbfi1Vuxg8mzzVFLXE100eF4qtHYe');
+
+    function showPopup() {
+      const popup = document.getElementById("popup");
+      popup.style.display = "block";
+      setTimeout(() => {
+        popup.style.display = "none";
+      }, 2000);
+    }
+
+    document.querySelectorAll('.buy-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const productDiv = button.closest('.product');
+        const productName = productDiv.getAttribute('data-name');
+
+        if (productName === "Test Product") {
+          // ✅ Proceed with Stripe checkout
+          fetch('/.netlify/functions/create-checkout-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productName })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.error) {
+              alert("Stripe Error: " + data.error);
+            } else {
+              stripe.redirectToCheckout({ sessionId: data.id });
+            }
+          })
+          .catch(err => {
+            alert("Network error: " + err.message);
+          });
+
+        } else {
+          // ❌ Show "Coming Soon" popup
+          showPopup();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
