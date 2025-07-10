@@ -415,9 +415,10 @@
       `<div class="stock-label in-stock">In Stock</div>` :
       `<div class="stock-label out-stock">Out of Stock</div>`;
 
+    // BUY BUTTON ONLY IF IN STOCK, links to Google Form
     const buyBtnHtml = p.inStock ?
-      `<button class="buy-btn" onclick="addToList('cart', ${index})">Add to Cart</button>` :
-      `<button class="buy-btn" disabled>Out of Stock</button>`;
+      `<button class="buy-btn" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=dialog', '_blank')">Buy</button>` :
+      "";
 
     document.getElementById("productDetail").innerHTML = `
       <div class="left">
@@ -428,6 +429,7 @@
       </div>
       <div class="right">
         <button class="wishlist-btn" onclick="addToList('wishlist', ${index})">Add to Wishlist</button>
+        <button class="cart-btn" onclick="addToList('cart', ${index})">Add to Cart</button>
         ${buyBtnHtml}
       </div>
     `;
@@ -530,16 +532,11 @@
   }
 
   function toggleStock(index, btn) {
-    products[index].inStock = !products[index].inStock;
-    if (products[index].inStock) {
-      btn.textContent = "Put Out of Stock";
-      btn.classList.remove("out-stock-btn");
-      btn.classList.add("in-stock-btn");
-    } else {
-      btn.textContent = "Put In Stock";
-      btn.classList.remove("in-stock-btn");
-      btn.classList.add("out-stock-btn");
-    }
+    const product = products[index];
+    product.inStock = !product.inStock;
+    btn.classList.toggle("in-stock-btn");
+    btn.classList.toggle("out-stock-btn");
+    btn.textContent = product.inStock ? "Put Out of Stock" : "Put In Stock";
     renderProducts();
   }
 
