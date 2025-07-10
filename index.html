@@ -1,235 +1,57 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>D1SPA4VR Merch Store</title>
+  <meta charset="UTF-8">
+  <title>D1SPA4VR Merch</title>
+  <script src="https://js.stripe.com/v3/"></script>
   <style>
     body {
       background-color: black;
-      color: white;
+      color: #ff0033;
       font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
       text-align: center;
     }
-    header {
-      font-size: 60px;
-      font-weight: 900;
-      color: #ff073a;
-      padding: 40px 20px;
-      text-shadow: 0 0 15px #ff073a;
+
+    h1 {
+      font-size: 3em;
+      font-weight: bold;
+      margin-top: 40px;
+      text-shadow: 0 0 10px #ff0033;
     }
-    nav {
-      background-color: #111;
-      padding: 15px;
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      font-size: 20px;
-    }
-    nav a {
-      color: #ff073a;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 40px 20px;
-      gap: 25px;
-    }
+
     .product {
-      background-color: #1a1a1a;
-      border: 2px solid #333;
-      border-radius: 12px;
-      width: 260px;
+      margin: 30px auto;
       padding: 20px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      width: 80%;
+      max-width: 400px;
+      background: #1a1a1a;
+      border: 2px solid #ff0033;
+      border-radius: 10px;
     }
+
     .product h2 {
-      font-size: 22px;
-      margin-bottom: 15px;
+      margin: 0;
+      font-size: 1.5em;
     }
+
     button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #ff0033;
+      color: white;
       border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 16px;
-      padding: 10px 15px;
+      border-radius: 5px;
       cursor: pointer;
-      margin: 6px 0;
-      width: 160px;
     }
-    .wishlist-btn {
-      background-color: #ff073a;
-      color: white;
-      transition: background-color 0.3s ease;
-    }
-    .wishlist-btn:hover {
-      background-color: #cc062f;
-    }
-    .buy-btn {
-      background-color: #00b300;
-      color: white;
-      transition: background-color 0.3s ease;
-    }
-    .buy-btn:hover {
-      background-color: #009900;
-    }
-    #toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #ff073a;
-      color: white;
-      padding: 12px 25px;
-      border-radius: 30px;
-      font-weight: bold;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 18px;
+
+    button:hover {
+      background-color: #ff1a4d;
     }
   </style>
 </head>
 <body>
+  <h1>D1SPA4VR Merch</h1>
 
-  <header>🛍️ D1SPA4VR MERCH 🛍️</header>
-
-  <nav>
-    <a href="#" id="wishlist-tab">❤️ Wishlist</a>
-    <a href="#" onclick="alert('Cart coming soon!')">🛒 Cart</a>
-  </nav>
-
-  <div class="container" id="products-container">
-    <div class="product" data-name="Sticker Pack 10">
-      <h2>🔥 Sticker Pack 10</h2>
-      <button class="wishlist-btn">Add to Wishlist</button>
-    </div>
-    <div class="product" data-name="Sticker Pack 8">
-      <h2>🎨 Sticker Pack 8</h2>
-      <button class="wishlist-btn">Add to Wishlist</button>
-    </div>
-    <div class="product" data-name="Sticker Pack 4">
-      <h2>💥 Sticker Pack 4</h2>
-      <button class="wishlist-btn">Add to Wishlist</button>
-    </div>
-    <div class="product" data-name="Custom Pencil">
-      <h2>✏️ Custom Pencil</h2>
-      <button class="wishlist-btn">Add to Wishlist</button>
-    </div>
-    <div class="product" data-name="Bookmark">
-      <h2>🔖 Bookmark</h2>
-      <button class="wishlist-btn">Add to Wishlist</button>
-    </div>
-    <div class="product" data-name="Test Item (Free)">
-      <h2>🧪 Test Item (Free)</h2>
-      <button id="checkout-button" class="buy-btn">Buy for $0.00</button>
-      <button class="wishlist-btn">Add to Wishlist</button>
-      <div style="font-size:14px; margin-top:6px; color:#ccc;">Secure Stripe Checkout enabled</div>
-    </div>
-  </div>
-
-  <div id="wishlist-modal" style="display:none; background:#111; color:#fff; position:fixed; top:60px; right:20px; width:320px; max-height:400px; overflow-y:auto; border-radius:12px; padding:20px; box-shadow: 0 0 15px #ff073a;">
-    <h3>Your Wishlist ❤️</h3>
-    <ul id="wishlist-items" style="list-style:none; padding:0;"></ul>
-    <button id="close-wishlist" style="background:#ff073a; color:#fff; padding:8px 12px; border:none; border-radius:8px; cursor:pointer; margin-top:15px;">Close</button>
-  </div>
-
-  <div id="toast">✔️ Added to wishlist!</div>
-
-  <script src="https://js.stripe.com/v3/"></script>
-  <script>
-    // Your Stripe publishable key here:
-    const stripe = Stripe("pk_test_51RjAiwGb9EZbdjJJJxWfv843uVJSQYzhpWq7kN0OrC7AGHkPUgrWbXKeTQYIsbItu4jrHBbfi1Vuxg8mzzVFLXE100eF4qtHYe");
-
-    const backendUrl = "https://d1spa4merch.netlify.app/.netlify/functions/create-checkout-session";
-
-    function showToast() {
-      const toast = document.getElementById('toast');
-      toast.style.opacity = '1';
-      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
-    }
-
-    function getWishlist() {
-      const saved = localStorage.getItem('wishlist');
-      return saved ? JSON.parse(saved) : [];
-    }
-
-    function saveWishlist(wishlist) {
-      localStorage.setItem('wishlist', JSON.stringify(wishlist));
-    }
-
-    function addToWishlist(itemName) {
-      const wishlist = getWishlist();
-      if (!wishlist.includes(itemName)) {
-        wishlist.push(itemName);
-        saveWishlist(wishlist);
-        showToast();
-        renderWishlist();
-      }
-    }
-
-    function renderWishlist() {
-      const list = document.getElementById('wishlist-items');
-      list.innerHTML = '';
-      const wishlist = getWishlist();
-      if (wishlist.length === 0) {
-        list.innerHTML = '<li><em>Your wishlist is empty.</em></li>';
-      } else {
-        wishlist.forEach(item => {
-          const li = document.createElement('li');
-          li.textContent = item;
-          list.appendChild(li);
-        });
-      }
-    }
-
-    const wishlistModal = document.getElementById('wishlist-modal');
-    document.getElementById('wishlist-tab').addEventListener('click', (e) => {
-      e.preventDefault();
-      wishlistModal.style.display = wishlistModal.style.display === 'none' ? 'block' : 'none';
-      renderWishlist();
-    });
-    document.getElementById('close-wishlist').addEventListener('click', () => {
-      wishlistModal.style.display = 'none';
-    });
-
-    document.querySelectorAll('.wishlist-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const productDiv = btn.closest('.product');
-        const name = productDiv.getAttribute('data-name');
-        addToWishlist(name);
-      });
-    });
-
-    document.getElementById('checkout-button').addEventListener('click', () => {
-      fetch(backendUrl, { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-          if (data.error) {
-            alert("Error: " + data.error);
-            return;
-          }
-          return stripe.redirectToCheckout({ sessionId: data.id });
-        })
-        .then(result => {
-          if (result && result.error) {
-            alert(result.error.message);
-          }
-        })
-        .catch(err => alert("Network error: " + err.message));
-    });
-  </script>
-
-</body>
-</html>
+  <!-- ✅ Product 1 -->
+  <div class="product" data-name="Sticker Pack 10">
+    <h2>🧃
