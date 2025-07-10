@@ -24,7 +24,7 @@
     margin-bottom: 1rem;
   }
   .nav button {
-    margin: 0.3rem;
+    margin: 0 0.3rem;
     padding: 0.4rem 1rem;
     font-weight: bold;
     border: none;
@@ -33,7 +33,7 @@
     color: white;
     cursor: pointer;
   }
-  .wishlist-container {
+  .wishlist-container, .cart-container {
     display: none;
     background: white;
     padding: 1rem;
@@ -41,13 +41,13 @@
     max-width: 500px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    font-weight: bold;
   }
   .wishlist-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 0.4rem 0;
-    font-weight: bold;
   }
   .remove-btn {
     color: #ff0033;
@@ -106,13 +106,6 @@
   .coming-soon:hover {
     background-color: #cc0022;
   }
-  .try-free {
-    background-color: #22cc33;
-    color: white;
-  }
-  .try-free:hover {
-    background-color: #1a9926;
-  }
   .wishlist-btn {
     background-color: #ff0033;
     color: white;
@@ -153,16 +146,19 @@
 <header>D1SPA4VR Merch</header>
 
 <div class="nav">
-  <button onclick="toggleWishlist()">View Wishlist ❤️</button>
+  <button onclick="toggleWishlist()">Wishlist ❤️</button>
+  <button onclick="toggleCart()">Cart 🛒</button>
 </div>
 
 <div id="wishlist" class="wishlist-container"></div>
+<div id="cart" class="cart-container">Nothing's in the cart.</div>
 
 <div class="container" id="product-list"></div>
 
 <div id="fade-msg">Added to wishlist ✔️</div>
 
 <footer>
+  D1 LLC (official company)<br/>
   📦 After you pay, please <a href="https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=header" target="_blank" rel="noopener">fill out this order form</a> with your shipping info.
 </footer>
 
@@ -173,15 +169,15 @@
     { name: "🎨 Sticker Pack 10", price: 10, buyable: false },
     { name: "🖼️ Sticker Pack 8", price: 8, buyable: false },
     { name: "🧷 Sticker Pack 4", price: 4, buyable: false },
-    { name: "🧃 Sticker", price: 2, buyable: false },
-    { name: "🆓 Test Item (TEMP)", price: 0, buyable: true, freeLink: "https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=header" }
+    { name: "🧃 Sticker", price: 2, buyable: false }
   ];
 
   const productList = document.getElementById("product-list");
   const wishlistContainer = document.getElementById("wishlist");
+  const cartContainer = document.getElementById("cart");
   const fadeMsg = document.getElementById("fade-msg");
 
-  // Load wishlist from localStorage or empty
+  // Wishlist stored in localStorage
   let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
   function renderProducts() {
@@ -192,12 +188,8 @@
 
       div.innerHTML = `
         <h2>${prod.name}</h2>
-        <p>${prod.price === 0 ? "Free" : "$" + prod.price.toFixed(2)}</p>
-        ${
-          prod.buyable 
-            ? `<a href="${prod.freeLink}" target="_blank" class="btn try-free">Try for Free</a>` 
-            : `<button class="btn coming-soon" onclick="comingSoon()">Coming Soon</button>`
-        }
+        <p>${"$" + prod.price.toFixed(2)}</p>
+        <button class="btn coming-soon" onclick="comingSoon()">Coming Soon</button>
         <button class="btn wishlist-btn" onclick="addToWishlist('${prod.name}')">Wishlist ❤️</button>
       `;
 
@@ -248,7 +240,17 @@
       wishlistContainer.style.display = "none";
     } else {
       wishlistContainer.style.display = "block";
+      cartContainer.style.display = "none";
       renderWishlist();
+    }
+  }
+
+  function toggleCart() {
+    if (cartContainer.style.display === "block") {
+      cartContainer.style.display = "none";
+    } else {
+      cartContainer.style.display = "block";
+      wishlistContainer.style.display = "none";
     }
   }
 
