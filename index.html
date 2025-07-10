@@ -358,7 +358,7 @@
 <button id="ownerBtn" title="Owner Button">Owner</button>
 
 <script>
-  // Your product data
+  // Products array with initial stock false
   const products = [
     { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 3.50, inStock: false },
     { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 3.50, inStock: false },
@@ -371,7 +371,7 @@
   let wishlist = [];
   let cart = [];
 
-  // Firebase configuration and initialization
+  // Firebase config & init
   const firebaseConfig = {
     apiKey: "AIzaSyBDeI1Vtvnwpv4GPJfH9oqrhoD1BVVqebk",
     authDomain: "d1spa4vr-merch.firebaseapp.com",
@@ -385,7 +385,7 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // Load stock from Firebase on startup and listen for changes
+  // Listen for stock data changes from Firebase
   function loadStock() {
     db.ref("stock").on("value", snapshot => {
       const stockData = snapshot.val() || {};
@@ -393,22 +393,22 @@
         p.inStock = !!stockData[i];
       });
       renderProducts();
-      if(document.getElementById("ownerPanel").style.display === "block") {
+      if (document.getElementById("ownerPanel").style.display === "block") {
         renderOwnerList();
       }
     });
   }
 
-  // Save stock change to Firebase when owner toggles
+  // Save stock change to Firebase
   function saveStock(index, inStock) {
     db.ref("stock/" + index).set(inStock);
   }
 
-  // Show selected page, hide others and owner panel
+  // Show page and hide others
   function showPage(id) {
     document.querySelectorAll(".page").forEach(p => p.classList.remove("visible"));
     document.getElementById("ownerPanel").style.display = "none";
-    if(id === 'ownerPanel'){
+    if (id === "ownerPanel") {
       document.getElementById("ownerPanel").style.display = "block";
     } else {
       document.getElementById(id).classList.add("visible");
@@ -417,7 +417,7 @@
     if (id === "cart") renderList("cart");
   }
 
-  // Render product list with current stock info
+  // Render product cards on home page
   function renderProducts() {
     const container = document.getElementById("productList");
     container.innerHTML = "";
@@ -447,7 +447,7 @@
     });
   }
 
-  // Show detailed product page with wishlist, cart and buy options
+  // Show product detail page with wishlist, cart, buy buttons
   function viewProduct(index) {
     const p = products[index];
     const stockLabel = p.inStock ?
@@ -474,7 +474,7 @@
     showPage("productPage");
   }
 
-  // Add item to wishlist or cart with checks
+  // Add item to wishlist or cart
   function addToList(type, index) {
     const item = products[index];
     const list = type === "wishlist" ? wishlist : cart;
@@ -491,7 +491,7 @@
     }
   }
 
-  // Render wishlist or cart list items
+  // Render wishlist or cart lists
   function renderList(type) {
     const ul = document.getElementById(type + "Items");
     const list = type === "wishlist" ? wishlist : cart;
@@ -503,7 +503,7 @@
     });
   }
 
-  // Remove from wishlist or cart
+  // Remove item from wishlist or cart
   function removeFromList(type, index) {
     if (type === "wishlist") wishlist.splice(index, 1);
     if (type === "cart") cart.splice(index, 1);
@@ -545,7 +545,7 @@
     }
   }
 
-  // Owner panel functions
+  // Owner panel open/close and render
   function openOwnerPanel() {
     showPage('ownerPanel');
     renderOwnerList();
@@ -556,7 +556,7 @@
     renderProducts();
   }
 
-  // Render owner panel product list with toggle buttons
+  // Render owner product list with toggle buttons
   function renderOwnerList() {
     const ul = document.getElementById("ownerProductList");
     ul.innerHTML = "";
@@ -573,7 +573,7 @@
     });
   }
 
-  // Toggle stock state and save to Firebase
+  // Toggle stock and save to Firebase
   function toggleStock(index, btn) {
     const product = products[index];
     product.inStock = !product.inStock;
@@ -584,600 +584,7 @@
     renderProducts();
   }
 
-  // Initial load of stock from Firebase and render products
-  loadStock();
-
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>D1SPA4VR Merch</title>
-  <style>
-    body {
-      background-color: #2f2f2f;
-      font-family: Arial, sans-serif;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      position: relative;
-      min-height: 100vh;
-    }
-    header {
-      background: #111;
-      color: #ff0033;
-      padding: 1rem;
-      text-align: center;
-      font-size: 2.5rem;
-      font-weight: bold;
-      text-shadow: 0 0 10px #ff0033, 0 0 20px #ff0033;
-    }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: #1e1e1e;
-    }
-    .tabs button {
-      background: #ff0033;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-      padding: 2rem;
-    }
-    .product {
-      background: #444;
-      border-radius: 10px;
-      padding: 1rem;
-      width: 230px;
-      text-align: center;
-      transition: transform 0.2s ease;
-      position: relative;
-    }
-    .product:hover {
-      transform: scale(1.03);
-    }
-    .product h2 {
-      font-size: 1.2rem;
-      color: #ff0033;
-    }
-    .product p {
-      margin: 0.3rem 0;
-    }
-    .buy-btn {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 0.4rem 1rem;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
-    .buy-btn:disabled {
-      background-color: #555 !important;
-      cursor: not-allowed;
-    }
-    .stock-label {
-      font-weight: bold;
-      margin-top: 0.5rem;
-    }
-    .in-stock {
-      color: #28a745;
-    }
-    .out-stock {
-      color: #ff4444;
-    }
-    .page {
-      display: none;
-    }
-    .visible {
-      display: block;
-    }
-    .footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-    .product-detail {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      background: #3b3b3b;
-      padding: 2rem;
-      border-radius: 10px;
-      margin: 2rem;
-    }
-    .product-detail .left {
-      max-width: 60%;
-    }
-    .product-detail .right {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 1rem;
-      min-width: 140px;
-    }
-    .product-detail button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .wishlist-btn {
-      background-color: #ff9933;
-      color: #000;
-    }
-    .cart-btn {
-      background-color: #007bff;
-      color: #fff;
-    }
-    .back-btn {
-      margin: 2rem;
-      display: inline-block;
-      color: #ccc;
-      text-decoration: none;
-    }
-    .list-page ul {
-      list-style: none;
-      padding: 0;
-      margin: 2rem;
-    }
-    .list-page li {
-      background: #444;
-      padding: 0.8rem 1rem;
-      margin-bottom: 0.5rem;
-      border-radius: 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .list-page .remove {
-      color: red;
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    /* Owner button */
-    #ownerBtn {
-      position: fixed;
-      bottom: 15px;
-      right: 15px;
-      background: #ff0033;
-      color: white;
-      font-weight: bold;
-      font-size: 0.75rem;
-      border: none;
-      border-radius: 5px;
-      padding: 6px 10px;
-      cursor: pointer;
-      box-shadow: 0 0 8px #ff0033;
-      z-index: 9999;
-      user-select: none;
-    }
-    /* Owner Panel */
-    #ownerPanel {
-      display: none;
-      padding: 2rem;
-      background: #222;
-      color: white;
-      min-height: 80vh;
-      overflow-y: auto;
-    }
-    #ownerPanel h2 {
-      color: #ff0033;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    #ownerPanel ul {
-      list-style: none;
-      padding: 0;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    #ownerPanel li {
-      background: #444;
-      padding: 1rem;
-      margin-bottom: 0.8rem;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #ownerPanel button.toggle-stock {
-      padding: 0.4rem 1rem;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      color: white;
-    }
-    #ownerPanel button.in-stock-btn {
-      background-color: #28a745;
-    }
-    #ownerPanel button.out-stock-btn {
-      background-color: #ff4444;
-    }
-
-    /* Password modal styles */
-    #passwordModal {
-      display: none;
-      position: fixed;
-      z-index: 10000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.75);
-      align-items: center;
-      justify-content: center;
-    }
-    #passwordBox {
-      background: #222;
-      padding: 2rem;
-      border-radius: 10px;
-      text-align: center;
-      width: 280px;
-      color: white;
-    }
-    #passwordBox h3 {
-      margin-bottom: 1rem;
-      color: #ff0033;
-    }
-    #passwordInput {
-      font-size: 1.5rem;
-      width: 100%;
-      text-align: center;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border-radius: 5px;
-      border: none;
-    }
-    #keypad {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    #keypad button {
-      font-size: 1.5rem;
-      padding: 0.8rem 0;
-      background: #ff0033;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      cursor: pointer;
-      user-select: none;
-      font-weight: bold;
-    }
-    #passwordActions {
-      display: flex;
-      justify-content: space-between;
-    }
-    #passwordActions button {
-      background: #555;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js"></script>
-</head>
-<body>
-
-<header>D1SPA4VR Merch</header>
-
-<div class="tabs">
-  <button onclick="showPage('home')">🏠 Home</button>
-  <button onclick="showPage('wishlist')">💖 Wishlist</button>
-  <button onclick="showPage('cart')">🛒 Cart</button>
-</div>
-
-<!-- Home Page -->
-<div id="home" class="page visible">
-  <div class="container" id="productList"></div>
-  <div class="footer">All prices USD. Plus tax and shipping. D1 LLC (official company)</div>
-</div>
-
-<!-- Product Page -->
-<div id="productPage" class="page">
-  <div class="product-detail" id="productDetail"></div>
-  <a href="#" class="back-btn" onclick="showPage('home')">← Back to home</a>
-</div>
-
-<!-- Wishlist Page -->
-<div id="wishlist" class="page list-page">
-  <ul id="wishlistItems"></ul>
-</div>
-
-<!-- Cart Page -->
-<div id="cart" class="page list-page">
-  <ul id="cartItems"></ul>
-</div>
-
-<!-- Owner Panel Page -->
-<div id="ownerPanel">
-  <h2>Owner Panel - Stock Management</h2>
-  <ul id="ownerProductList"></ul>
-  <a href="#" class="back-btn" onclick="closeOwnerPanel()">← Back to home</a>
-</div>
-
-<!-- Password Modal -->
-<div id="passwordModal">
-  <div id="passwordBox">
-    <h3>Enter Owner Password</h3>
-    <input type="password" id="passwordInput" maxlength="6" autocomplete="off" />
-    <div id="keypad">
-      <button onclick="pressKey('1')">1</button>
-      <button onclick="pressKey('2')">2</button>
-      <button onclick="pressKey('3')">3</button>
-      <button onclick="pressKey('4')">4</button>
-      <button onclick="pressKey('5')">5</button>
-      <button onclick="pressKey('6')">6</button>
-      <button onclick="pressKey('7')">7</button>
-      <button onclick="pressKey('8')">8</button>
-      <button onclick="pressKey('9')">9</button>
-      <button onclick="backspaceKey()">⌫</button>
-      <button onclick="pressKey('0')">0</button>
-      <button onclick="submitPassword()">OK</button>
-    </div>
-    <div id="passwordActions">
-      <button onclick="cancelPassword()">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<button id="ownerBtn" title="Owner Button">Owner</button>
-
-<script>
-  // Your product data
-  const products = [
-    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 3.50, inStock: false },
-    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 3.50, inStock: false },
-    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 3.50, inStock: false },
-    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 3.50, inStock: false },
-    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 3.50, inStock: false },
-    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 3.50, inStock: false }
-  ];
-
-  let wishlist = [];
-  let cart = [];
-
-  // Firebase configuration and initialization
-  const firebaseConfig = {
-    apiKey: "AIzaSyBDeI1Vtvnwpv4GPJfH9oqrhoD1BVVqebk",
-    authDomain: "d1spa4vr-merch.firebaseapp.com",
-    databaseURL: "https://d1spa4vr-merch-default-rtdb.firebaseio.com",
-    projectId: "d1spa4vr-merch",
-    storageBucket: "d1spa4vr-merch.firebasestorage.app",
-    messagingSenderId: "862122277887",
-    appId: "1:862122277887:web:9db63669e5b2dac4f445ca",
-    measurementId: "G-SQW1MKTQQ9"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
-  // Load stock from Firebase on startup and listen for changes
-  function loadStock() {
-    db.ref("stock").on("value", snapshot => {
-      const stockData = snapshot.val() || {};
-      products.forEach((p, i) => {
-        p.inStock = !!stockData[i];
-      });
-      renderProducts();
-      if(document.getElementById("ownerPanel").style.display === "block") {
-        renderOwnerList();
-      }
-    });
-  }
-
-  // Save stock change to Firebase when owner toggles
-  function saveStock(index, inStock) {
-    db.ref("stock/" + index).set(inStock);
-  }
-
-  // Show selected page, hide others and owner panel
-  function showPage(id) {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("visible"));
-    document.getElementById("ownerPanel").style.display = "none";
-    if(id === 'ownerPanel'){
-      document.getElementById("ownerPanel").style.display = "block";
-    } else {
-      document.getElementById(id).classList.add("visible");
-    }
-    if (id === "wishlist") renderList("wishlist");
-    if (id === "cart") renderList("cart");
-  }
-
-  // Render product list with current stock info
-  function renderProducts() {
-    const container = document.getElementById("productList");
-    container.innerHTML = "";
-    products.forEach((p, i) => {
-      const div = document.createElement("div");
-      div.className = "product";
-
-      const stockText = p.inStock ?
-        `<div class="stock-label in-stock">In Stock</div>` :
-        `<div class="stock-label out-stock">Out of Stock</div>`;
-
-      let buyButtonHtml = "";
-      if (p.inStock) {
-        buyButtonHtml = `<button class="buy-btn" onclick="viewProduct(${i})">Buy</button>`;
-      } else {
-        buyButtonHtml = `<button class="buy-btn" disabled>Out of Stock</button>`;
-      }
-
-      div.innerHTML = `
-        <h2>${p.name}</h2>
-        <p>$${p.price.toFixed(2)}</p>
-        <p>+ $${p.shipping.toFixed(2)} shipping</p>
-        ${stockText}
-        ${buyButtonHtml}
-      `;
-      container.appendChild(div);
-    });
-  }
-
-  // Show detailed product page with wishlist, cart and buy options
-  function viewProduct(index) {
-    const p = products[index];
-    const stockLabel = p.inStock ?
-      `<div class="stock-label in-stock">In Stock</div>` :
-      `<div class="stock-label out-stock">Out of Stock</div>`;
-
-    const buyBtnHtml = p.inStock ?
-      `<button class="buy-btn" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=dialog', '_blank')">Buy</button>` :
-      "";
-
-    document.getElementById("productDetail").innerHTML = `
-      <div class="left">
-        <h2>${p.name}</h2>
-        <p><strong>Price:</strong> $${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
-        <p>${p.desc}</p>
-        ${stockLabel}
-      </div>
-      <div class="right">
-        <button class="wishlist-btn" onclick="addToList('wishlist', ${index})">Add to Wishlist</button>
-        <button class="cart-btn" onclick="addToList('cart', ${index})">Add to Cart</button>
-        ${buyBtnHtml}
-      </div>
-    `;
-    showPage("productPage");
-  }
-
-  // Add item to wishlist or cart with checks
-  function addToList(type, index) {
-    const item = products[index];
-    const list = type === "wishlist" ? wishlist : cart;
-    if (!list.find(p => p.name === item.name)) {
-      if (type === "cart" && !item.inStock) {
-        alert("Sorry, this product is out of stock.");
-        return;
-      }
-      list.push(item);
-      renderList(type);
-      alert(type === "wishlist" ? "Added to wishlist ✔️" : "Added to cart ✔️");
-    } else {
-      alert("Already added!");
-    }
-  }
-
-  // Render wishlist or cart list items
-  function renderList(type) {
-    const ul = document.getElementById(type + "Items");
-    const list = type === "wishlist" ? wishlist : cart;
-    ul.innerHTML = "";
-    list.forEach((item, i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `${item.name} <span class="remove" onclick="removeFromList('${type}', ${i})">❌</span>`;
-      ul.appendChild(li);
-    });
-  }
-
-  // Remove from wishlist or cart
-  function removeFromList(type, index) {
-    if (type === "wishlist") wishlist.splice(index, 1);
-    if (type === "cart") cart.splice(index, 1);
-    renderList(type);
-  }
-
-  // Owner button and password modal logic
-  const ownerBtn = document.getElementById("ownerBtn");
-  const passwordModal = document.getElementById("passwordModal");
-  const passwordInput = document.getElementById("passwordInput");
-
-  ownerBtn.addEventListener("click", () => {
-    passwordInput.value = "";
-    passwordModal.style.display = "flex";
-    passwordInput.focus();
-  });
-
-  function pressKey(num) {
-    if (passwordInput.value.length < 6) {
-      passwordInput.value += num;
-    }
-  }
-  function backspaceKey() {
-    passwordInput.value = passwordInput.value.slice(0, -1);
-  }
-  function cancelPassword() {
-    passwordModal.style.display = "none";
-    passwordInput.value = "";
-  }
-  function submitPassword() {
-    const password = passwordInput.value;
-    if (password === "567812") {
-      passwordModal.style.display = "none";
-      openOwnerPanel();
-    } else {
-      alert("Incorrect password.");
-      passwordInput.value = "";
-      passwordInput.focus();
-    }
-  }
-
-  // Owner panel functions
-  function openOwnerPanel() {
-    showPage('ownerPanel');
-    renderOwnerList();
-  }
-
-  function closeOwnerPanel() {
-    showPage('home');
-    renderProducts();
-  }
-
-  // Render owner panel product list with toggle buttons
-  function renderOwnerList() {
-    const ul = document.getElementById("ownerProductList");
-    ul.innerHTML = "";
-    products.forEach((p, i) => {
-      const li = document.createElement("li");
-      const btnClass = p.inStock ? "in-stock-btn" : "out-stock-btn";
-      const btnText = p.inStock ? "Put Out of Stock" : "Put In Stock";
-
-      li.innerHTML = `
-        ${p.name}
-        <button class="toggle-stock ${btnClass}" onclick="toggleStock(${i}, this)">${btnText}</button>
-      `;
-      ul.appendChild(li);
-    });
-  }
-
-  // Toggle stock state and save to Firebase
-  function toggleStock(index, btn) {
-    const product = products[index];
-    product.inStock = !product.inStock;
-    btn.classList.toggle("in-stock-btn");
-    btn.classList.toggle("out-stock-btn");
-    btn.textContent = product.inStock ? "Put Out of Stock" : "Put In Stock";
-    saveStock(index, product.inStock);
-    renderProducts();
-  }
-
-  // Initial load of stock from Firebase and render products
+  // Load stock from Firebase on start
   loadStock();
 
 </script>
