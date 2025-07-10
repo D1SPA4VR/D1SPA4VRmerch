@@ -149,8 +149,10 @@
 
   <script src="https://js.stripe.com/v3/"></script>
   <script>
-    const backendUrl = "https://d1spa4merch.netlify.app/.netlify/functions/create-checkout-session";
+    // Your Stripe publishable key here:
     const stripe = Stripe("pk_test_51RjAiwGb9EZbdjJJJxWfv843uVJSQYzhpWq7kN0OrC7AGHkPUgrWbXKeTQYIsbItu4jrHBbfi1Vuxg8mzzVFLXE100eF4qtHYe");
+
+    const backendUrl = "https://d1spa4merch.netlify.app/.netlify/functions/create-checkout-session";
 
     function showToast() {
       const toast = document.getElementById('toast');
