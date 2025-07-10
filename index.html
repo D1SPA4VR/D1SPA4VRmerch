@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>D1SPA4VR Merch</title>
   <style>
-    /* ... your existing CSS here ... */
     body {
       background-color: #2f2f2f;
       font-family: Arial, sans-serif;
@@ -142,7 +141,6 @@
       display: inline-block;
       color: #ccc;
       text-decoration: none;
-      cursor: pointer;
     }
     .list-page ul {
       list-style: none;
@@ -355,75 +353,24 @@
 
 <button id="ownerBtn" title="Owner Button">Owner</button>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
 <script>
-  // Your products array, but remove inStock here since it will come from Firebase:
   const products = [
-    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 3.50 },
-    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 3.50 },
-    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 3.50 },
-    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 3.50 },
-    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 3.50 },
-    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 3.50 }
+    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 3.50, inStock: false },
+    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 3.50, inStock: false },
+    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 3.50, inStock: false },
+    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 3.50, inStock: false },
+    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 3.50, inStock: false },
+    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 3.50, inStock: false }
   ];
 
-  // Local wishlist and cart
   let wishlist = [];
   let cart = [];
 
-  // Firebase config (your provided config)
-  const firebaseConfig = {
-    apiKey: "AIzaSyBDeI1Vtvnwpv4GPJfH9oqrhoD1BVVqebk",
-    authDomain: "d1spa4vr-merch.firebaseapp.com",
-    databaseURL: "https://d1spa4vr-merch-default-rtdb.firebaseio.com",
-    projectId: "d1spa4vr-merch",
-    storageBucket: "d1spa4vr-merch.firebasestorage.app",
-    messagingSenderId: "862122277887",
-    appId: "1:862122277887:web:9db63669e5b2dac4f445ca",
-    measurementId: "G-SQW1MKTQQ9"
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
-  // Path in DB to store stock status
-  const stockDbPath = 'productsStock';
-
-  // On load, read stock data from Firebase and update products
-  function syncStockFromFirebase() {
-    db.ref(stockDbPath).on('value', (snapshot) => {
-      const stockData = snapshot.val();
-      if (stockData) {
-        // Update each product in products with stock from DB
-        products.forEach((p, i) => {
-          p.inStock = !!stockData[i]; // Convert to boolean
-        });
-      } else {
-        // If no data in DB, initialize with all out of stock (false)
-        const initStock = {};
-        products.forEach((p,i) => { initStock[i] = false; p.inStock = false; });
-        db.ref(stockDbPath).set(initStock);
-      }
-      renderProducts();
-      if(document.getElementById('ownerPanel').style.display === 'block') {
-        renderOwnerList();
-      }
-    });
-  }
-
-  // Write stock status change to Firebase
-  function updateStockInFirebase(index, inStock) {
-    db.ref(`${stockDbPath}/${index}`).set(inStock);
-  }
-
-  // Show pages
   function showPage(id) {
+    // Hide all pages and owner panel
     document.querySelectorAll(".page").forEach(p => p.classList.remove("visible"));
     document.getElementById("ownerPanel").style.display = "none";
+    // Show selected page
     if(id === 'ownerPanel'){
       document.getElementById("ownerPanel").style.display = "block";
     } else {
@@ -433,7 +380,6 @@
     if (id === "cart") renderList("cart");
   }
 
-  // Render products list on home page
   function renderProducts() {
     const container = document.getElementById("productList");
     container.innerHTML = "";
@@ -469,9 +415,13 @@
       `<div class="stock-label in-stock">In Stock</div>` :
       `<div class="stock-label out-stock">Out of Stock</div>`;
 
-    const buyBtnHtml = p.inStock ?
-      `<button class="buy-btn" onclick="addToList('cart', ${index})">Add to Cart</button>` :
-      `<button class="buy-btn" disabled>Out of Stock</button>`;
+    const buyBtnHtml = p.inStock ? `
+      <button class="buy-btn" onclick="addToList('cart', ${index})">Add to Cart</button>
+      <button class="buy-btn" style="margin-top:8px; background:#ff0033;" 
+        onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=header'">
+        Buy
+      </button>
+    ` : `<button class="buy-btn" disabled>Out of Stock</button>`;
 
     document.getElementById("productDetail").innerHTML = `
       <div class="left">
@@ -584,14 +534,8 @@
   }
 
   function toggleStock(index, btn) {
-    const newStockStatus = !products[index].inStock;
-    products[index].inStock = newStockStatus;
-
-    // Update Firebase DB
-    updateStockInFirebase(index, newStockStatus);
-
-    // Update button UI immediately
-    if (newStockStatus) {
+    products[index].inStock = !products[index].inStock;
+    if (products[index].inStock) {
       btn.textContent = "Put Out of Stock";
       btn.classList.remove("out-stock-btn");
       btn.classList.add("in-stock-btn");
@@ -603,9 +547,8 @@
     renderProducts();
   }
 
-  // Initial load: sync stock and render products
-  syncStockFromFirebase();
-
+  // Initial render on load
+  renderProducts();
 </script>
 
 </body>
