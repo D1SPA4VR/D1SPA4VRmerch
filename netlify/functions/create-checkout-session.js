@@ -1,15 +1,16 @@
-pconst stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const products = {
-  "Sticker Pack 10": { price: 1000 },   // $10.00
-  "Sticker Pack 8": { price: 800 },     // $8.00
-  "Sticker Pack 4": { price: 400 },     // $4.00
-  "Custom Pencil": { price: 500 },      // $5.00
-  "Bookmark": { price: 300 },            // $3.00
-  "Test Item (Free)": { price: 0 }
+  "Sticker Pack 10": { price: 1000 },    // $10.00
+  "Sticker Pack 8": { price: 800 },      // $8.00
+  "Sticker Pack 4": { price: 400 },      // $4.00
+  "Custom Pencil": { price: 500 },       // $5.00
+  "Bookmark": { price: 300 },             // $3.00
+  "Test Item (Free)": { price: 0 },      // Free
+  "Test Product": { price: 1234 }        // $12.34 - example test product
 };
 
-exports.handler = async function(event, context) {
+exports.handler = async function(event) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
@@ -17,7 +18,7 @@ exports.handler = async function(event, context) {
   let body;
   try {
     body = JSON.parse(event.body);
-  } catch {
+  } catch (e) {
     return { statusCode: 400, body: "Invalid JSON" };
   }
 
@@ -53,4 +54,3 @@ exports.handler = async function(event, context) {
     };
   }
 };
-
