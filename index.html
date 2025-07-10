@@ -107,7 +107,7 @@
     { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 3.5, inStock: false },
     { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 3.5, inStock: false }
   ];
-  let wishlist = [], cart = [];
+  let wishlist = [], cart = [], isOwnerOpen = false;
 
   db.ref(stockPath).on('value', snap => {
     const val = snap.val() || {};
@@ -185,7 +185,6 @@
     window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=header';
   }
 
-  let isOwnerOpen = false;
   document.getElementById('ownerBtn').onclick = () => { document.getElementById('pwModal').style.display = 'flex'; }
   function submitPwd() {
     if (document.getElementById('passwordInput').value === '567812') {
