@@ -3,13 +3,8 @@
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>D1SPA4VR Merch</title>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
   <style>
-    body { background:#2f2f2f; color:#fff; font-family:Arial; margin:0; padding:0; min-height:100vh }
+    body { background:#2f2f2f; color:#fff; font-family:Arial, sans-serif; margin:0; padding:0; min-height:100vh }
     header{ background:#111; color:#ff0033; padding:1rem; text-align:center; font-size:2.5rem; text-shadow:0 0 10px #ff0033 }
     .tabs{ display:flex; justify-content:center; background:#1e1e1e; padding:.8rem }
     .tabs button{ background:#ff0033; color:#fff; border:none; padding:.6rem 1.2rem; margin:0 .4rem; border-radius:4px; font-weight:bold; cursor:pointer }
@@ -20,9 +15,9 @@
     .stock-label{ font-weight:bold; margin-top:.5rem }
     .in-stock{ color:#28a745 }
     .out-stock{ color:#ff4444 }
-    .buy-btn{ background:#28a745; color:#fff; border:none; padding:.5rem; margin-top:.6rem; border-radius:4px; cursor:pointer }
+    .buy-btn, .wishlist-btn, .cart-btn{ border:none; padding:.5rem; border-radius:4px; font-weight:bold; cursor:pointer }
+    .buy-btn{ background:#28a745; color:#fff; margin-top:.6rem }
     .buy-btn:disabled{ background:#555; cursor:not-allowed }
-    .wishlist-btn, .cart-btn{ padding:.5rem; border:none; border-radius:4px; font-weight:bold; cursor:pointer }
     .wishlist-btn{ background:#ff9933; color:#000 }
     .cart-btn{ background:#007bff; color:#fff }
     .page { display:none }
@@ -52,6 +47,7 @@
 <body>
 
 <header>D1SPA4VR Merch</header>
+
 <div class="tabs">
   <button onclick="showPage('home')">Home</button>
   <button onclick="showPage('wishlist')">Wishlist</button>
@@ -86,7 +82,12 @@
   </div>
 </div>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
 <script>
+  // Your Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyBDeI1Vtvnwpv4GPJfH9oqrhoD1BVVqebk",
     authDomain: "d1spa4vr-merch.firebaseapp.com",
@@ -94,49 +95,51 @@
     projectId: "d1spa4vr-merch",
     storageBucket: "d1spa4vr-merch.appspot.com",
     messagingSenderId: "862122277887",
-    appId: "1:862122277887:web:9db63669e5b2dac4f445ca"
+    appId: "1:862122277887:web:9db63669e5b2dac4f445ca",
+    measurementId: "G-SQW1MKTQQ9"
   };
+
+  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
-  const db = firebase.database(), stockPath = 'productsStock';
+  const db = firebase.database();
 
+  // Product list
   const products = [
-    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 3.5, inStock: false },
-    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 3.5, inStock: false },
-    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 3.5, inStock: false },
-    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 3.5, inStock: false },
-    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 3.5, inStock: false },
-    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 3.5, inStock: false }
+    { name:"✏️ Custom Pencil", price:5, desc:"Handmade pencil with your name.", shipping:3.5, inStock:false },
+    { name:"🔖 Bookmark", price:3, desc:"A cool bookmark made with care.", shipping:3.5, inStock:false },
+    { name:"🎨 Sticker Pack 10", price:10, desc:"10 fun stickers.", shipping:3.5, inStock:false },
+    { name:"🖼️ Sticker Pack 8", price:8, desc:"8 stylish stickers.", shipping:3.5, inStock:false },
+    { name:"🧷 Sticker Pack 4", price:4, desc:"4 cute stickers.", shipping:3.5, inStock:false },
+    { name:"🧃 Sticker", price:2, desc:"Single collectible sticker.", shipping:3.5, inStock:false }
   ];
-  let wishlist = [], cart = [], isOwnerOpen = false;
 
-  db.ref(stockPath).on('value', snap => {
-    const val = snap.val() || {};
-    products.forEach((p, i) => p.inStock = !!val[i]);
-    renderProducts(); if (isOwnerOpen) renderOwnerList();
-  });
+  let wishlist = [], cart = [];
 
+  // Show/hide pages
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
     document.getElementById('ownerPanel').style.display = 'none';
     document.getElementById(id).classList.add('visible');
   }
 
+  // Render products grid
   function renderProducts() {
-    const c = document.getElementById('productList'); c.innerHTML = '';
+    const c = document.getElementById('productList');
+    c.innerHTML = '';
     products.forEach((p, i) => {
-      const e = document.createElement('div'); e.className = 'product';
-      e.innerHTML = `
+      const d = document.createElement('div');
+      d.className = 'product';
+      d.innerHTML = `
         <h2>${p.name}</h2>
         <p>$${p.price.toFixed(2)} + $${p.shipping.toFixed(2)}</p>
-        <div class="stock-label ${p.inStock ? 'in-stock' : 'out-stock'}">
-          ${p.inStock ? 'In Stock' : 'Out of Stock'}
-        </div>
+        <div class="stock-label ${p.inStock ? 'in-stock' : 'out-stock'}">${p.inStock ? 'In Stock' : 'Out of Stock'}</div>
         <button class="buy-btn" ${!p.inStock ? 'disabled' : ''} onclick="openProduct(${i})">View</button>
       `;
-      c.appendChild(e);
+      c.appendChild(d);
     });
   }
 
+  // Open product detail page (Amazon style)
   function openProduct(i) {
     const p = products[i];
     document.getElementById('productDetail').innerHTML = `
@@ -152,67 +155,140 @@
           <button class="cart-btn" onclick="addToList('cart',${i})">Add to Cart</button>
           <button class="buy-btn" onclick="buyNow(${i})" ${!p.inStock ? 'disabled' : ''}>Buy Now</button>
         </div>
-      </div>`;
+      </div>
+    `;
     showPage('productPage');
   }
 
+  // Add to wishlist or cart
   function addToList(type, i) {
-    const list = (type === 'wishlist' ? wishlist : cart), item = products[i];
+    const list = type === 'wishlist' ? wishlist : cart;
+    const item = products[i];
     if (!list.includes(item)) {
-      if (type === 'cart' && !item.inStock) { alert('Out of Stock'); return }
-      list.push(item); renderList(type);
-      alert(type + ' added ✅');
-    } else alert('Already added');
+      if (type === 'cart' && !item.inStock) {
+        alert('Sorry, this product is out of stock.');
+        return;
+      }
+      list.push(item);
+      renderList(type);
+      alert(`${type.charAt(0).toUpperCase() + type.slice(1)} added!`);
+    } else {
+      alert('Already added.');
+    }
   }
 
+  // Render wishlist or cart lists
   function renderList(type) {
-    const list = (type === 'wishlist' ? wishlist : cart);
+    const list = type === 'wishlist' ? wishlist : cart;
     const ul = document.getElementById(type + 'Items');
     ul.innerHTML = '';
-    list.forEach((itm, i) => {
+    list.forEach((item, i) => {
       const li = document.createElement('li');
-      li.innerHTML = `${itm.name} <span class="remove" onclick="removeFromList('${type}',${i})">❌</span>`;
+      li.innerHTML = `${item.name} <span class="remove" onclick="removeFromList('${type}', ${i})">❌</span>`;
       ul.appendChild(li);
     });
   }
 
+  // Remove item from wishlist or cart
   function removeFromList(type, i) {
-    const list = (type === 'wishlist' ? wishlist : cart);
-    list.splice(i, 1); renderList(type);
+    const list = type === 'wishlist' ? wishlist : cart;
+    list.splice(i, 1);
+    renderList(type);
   }
 
+  // Buy now - redirects to Google Form
   function buyNow(i) {
     window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=header';
   }
 
-  document.getElementById('ownerBtn').onclick = () => { document.getElementById('pwModal').style.display = 'flex'; }
+  // Owner panel password modal & logic
+  const ownerBtn = document.getElementById('ownerBtn');
+  const pwModal = document.getElementById('pwModal');
+  const passwordInput = document.getElementById('passwordInput');
+
+  ownerBtn.onclick = () => {
+    passwordInput.value = '';
+    pwModal.style.display = 'flex';
+    passwordInput.focus();
+  };
+
   function submitPwd() {
-    if (document.getElementById('passwordInput').value === '567812') {
-      document.getElementById('pwModal').style.display = 'none';
-      document.getElementById('ownerPanel').style.display = 'block';
-      showPage('ownerPanel'); isOwnerOpen = true; renderOwnerList();
-    } else alert('Wrong password');
+    if (passwordInput.value === '567812') {
+      pwModal.style.display = 'none';
+      openOwnerPanel();
+    } else {
+      alert('Incorrect password.');
+      passwordInput.value = '';
+      passwordInput.focus();
+    }
   }
-  function cancelPwd() { document.getElementById('pwModal').style.display = 'none'; }
+
+  function cancelPwd() {
+    pwModal.style.display = 'none';
+  }
+
+  // Owner panel functions
+  function openOwnerPanel() {
+    showPage('ownerPanel');
+    renderOwnerList();
+    document.getElementById('ownerPanel').style.display = 'block';
+  }
 
   function renderOwnerList() {
-    const ul = document.getElementById('ownerProductList'); ul.innerHTML = '';
+    const ul = document.getElementById('ownerProductList');
+    ul.innerHTML = '';
     products.forEach((p, i) => {
       const li = document.createElement('li');
-      li.innerHTML = `${p.name}
-        <button class="toggle-stock ${p.inStock ? 'in-stock-btn' : 'out-stock-btn'}" onclick="toggleStock(${i})">
-          ${p.inStock ? 'Mark Out of Stock' : 'Mark In Stock'}
-        </button>`;
+      const btnClass = p.inStock ? 'in-stock-btn' : 'out-stock-btn';
+      const btnText = p.inStock ? 'Mark Out of Stock' : 'Mark In Stock';
+
+      li.innerHTML = `
+        ${p.name}
+        <button class="toggle-stock ${btnClass}" onclick="toggleStock(${i})">${btnText}</button>
+      `;
       ul.appendChild(li);
     });
   }
 
+  // Toggle stock status and update Firebase
   function toggleStock(i) {
-    const newVal = !products[i].inStock;
-    db.ref(`${stockPath}/${i}`).set(newVal);
+    products[i].inStock = !products[i].inStock;
+    updateStockInFirebase(i, products[i].inStock);
+    renderProducts();
+    renderOwnerList();
   }
 
+  // Firebase: listen for stock changes and sync locally
+  const stockRef = db.ref('productStock');
+
+  stockRef.on('value', snapshot => {
+    const stockData = snapshot.val();
+    if (stockData) {
+      // Update local products inStock based on Firebase
+      products.forEach((p, i) => {
+        if (stockData.hasOwnProperty(i)) {
+          p.inStock = stockData[i];
+        }
+      });
+      renderProducts();
+      if(document.getElementById('ownerPanel').style.display === 'block') {
+        renderOwnerList();
+      }
+    }
+  });
+
+  // Write updated stock to Firebase
+  function updateStockInFirebase(index, inStock) {
+    stockRef.child(index).set(inStock).catch(e => {
+      alert('Failed to update stock: ' + e.message);
+    });
+  }
+
+  // Initial renders
   renderProducts();
+  renderList('wishlist');
+  renderList('cart');
 </script>
+
 </body>
 </html>
