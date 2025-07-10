@@ -5,38 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>D1SPA4VR Merch</title>
   <style>
-    /* --- Loading Screen --- */
-    #loadingOverlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background-color: #111;
-      color: #ff0033;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
-      z-index: 9999;
-      transition: opacity 0.5s ease;
-    }
-    #loadingOverlay.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* Spinner Animation */
-    #loadingOverlay span {
-      display: inline-block;
-      animation: spin 1.5s linear infinite;
-      /* Adjust transform origin to center */
-      transform-origin: center center;
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
     body {
       margin: 0;
       background: #2f2f2f;
@@ -188,9 +156,6 @@
 </head>
 <body>
 
-<!-- Startup Loading Overlay -->
-<div id="loadingOverlay"><span>Loading D1SPA4VR Merch...</span></div>
-
 <header>D1SPA4VR Merch</header>
 
 <div class="tabs">
@@ -218,13 +183,6 @@
 </div>
 
 <script>
-  // Startup animation
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      document.getElementById("loadingOverlay").classList.add("fade-out");
-    }, 1500);
-  });
-
   const products = [
     { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 1.50, inStock: true },
     { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 1.20, inStock: true },
