@@ -1,275 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>D1SPA4VR Merch</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>D1SPA4VR Merch Store</title>
   <style>
     body {
-      background-color: #000;
-      color: #fff;
+      background-color: black;
+      color: white;
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background-color: #111;
-      padding: 20px;
+      margin: 0; padding: 0;
       text-align: center;
-      font-size: 36px;
-      color: #ff073a;
-      text-shadow: 0 0 10px #ff073a;
     }
-
+    header {
+      font-size: 60px;
+      font-weight: 900;
+      color: #ff073a;
+      padding: 40px 20px;
+      text-shadow: 0 0 15px #ff073a;
+    }
     nav {
       background-color: #111;
-      padding: 10px 20px;
+      padding: 15px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      font-size: 20px;
     }
-
-    .nav-links {
-      display: flex;
-      gap: 15px;
-    }
-
-    nav a, .dropdown-btn {
+    nav a {
       color: #ff073a;
       text-decoration: none;
-      font-size: 18px;
       cursor: pointer;
     }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #222;
-      min-width: 200px;
-      padding: 10px;
-      z-index: 1;
-      top: 25px;
-    }
-
-    .dropdown-content input {
-      width: 100%;
-      padding: 5px;
-      margin-bottom: 5px;
-    }
-
     .container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      padding: 20px;
+      padding: 40px 20px;
+      gap: 25px;
     }
-
     .product {
       background-color: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 8px;
+      border: 2px solid #333;
+      border-radius: 12px;
+      width: 260px;
       padding: 20px;
-      margin: 10px;
-      width: 250px;
-      text-align: center;
+      box-sizing: border-box;
     }
-
     .product h2 {
-      margin-bottom: 10px;
+      font-size: 22px;
+      margin-bottom: 15px;
     }
-
     .coming-soon {
       background-color: red;
       color: white;
       border: none;
       padding: 10px;
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-
-    .wishlist-btn {
-      background-color: #ff073a;
-      border: none;
-      color: white;
-      padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .wishlist-page, .cart-page {
-      display: none;
-      padding: 20px;
-    }
-
-    .wishlist-page h2, .cart-page h2 {
-      color: #ff073a;
-    }
-
-    .wishlist-item {
-      margin: 5px 0;
-    }
-
-    .back-btn {
-      background-color: #444;
-      border: none;
-      color: white;
-      padding: 8px;
-      font-size: 14px;
-      cursor: pointer;
-      margin-bottom: 10px;
-    }
-
-    .notification {
-      position: fixed;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #222;
-      color: #0f0;
-      padding: 10px 20px;
+      margin: 12px 0;
       border-radius: 8px;
-      display: none;
-      z-index: 999;
-      box-shadow: 0 0 10px #0f0;
+      cursor: not-allowed;
+      font-weight: bold;
+      font-size: 16px;
     }
-
-    .ai-response {
-      color: #0ff;
-      margin-top: 10px;
+    .buy-btn {
+      background-color: #00b300;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .buy-btn:hover {
+      background-color: #009900;
+    }
+    .note {
+      font-size: 14px;
+      color: #ccc;
+      margin-top: 8px;
     }
   </style>
 </head>
 <body>
 
-  <header>D1SPA4VR MERCH</header>
+  <header>🛍️ D1SPA4VR MERCH 🛍️</header>
 
   <nav>
-    <div class="dropdown">
-      <span class="dropdown-btn" onclick="toggleDropdown()">AI Tools ▼</span>
-      <div class="dropdown-content" id="ai-tools">
-        <input type="text" id="ai-question" placeholder="Ask me anything...">
-        <button onclick="askAI()">Ask</button>
-        <div class="ai-response" id="ai-response"></div>
-      </div>
-    </div>
-    <div class="nav-links">
-      <a onclick="showWishlist()">Wishlist</a>
-      <a onclick="showCart()">Cart</a>
-    </div>
+    <a onclick="alert('Wishlist coming soon!')">❤️ Wishlist</a>
+    <a onclick="alert('Cart coming soon!')">🛒 Cart</a>
   </nav>
 
-  <div class="notification" id="notify">✔️ Added to Wishlist</div>
+  <div class="container">
 
-  <div class="container" id="product-container">
     <div class="product">
-      <h2>Sticker Pack 10</h2>
-      <button class="coming-soon">Coming Soon</button><br>
-      <button class="wishlist-btn" onclick="addToWishlist('Sticker Pack 10')">Add to Wishlist</button>
+      <h2>🔥 Sticker Pack 10</h2>
+      <button class="coming-soon">Coming Soon</button>
     </div>
 
     <div class="product">
-      <h2>Sticker Pack 8</h2>
-      <button class="coming-soon">Coming Soon</button><br>
-      <button class="wishlist-btn" onclick="addToWishlist('Sticker Pack 8')">Add to Wishlist</button>
+      <h2>🎨 Sticker Pack 8</h2>
+      <button class="coming-soon">Coming Soon</button>
     </div>
 
     <div class="product">
-      <h2>Sticker Pack 4</h2>
-      <button class="coming-soon">Coming Soon</button><br>
-      <button class="wishlist-btn" onclick="addToWishlist('Sticker Pack 4')">Add to Wishlist</button>
+      <h2>💥 Sticker Pack 4</h2>
+      <button class="coming-soon">Coming Soon</button>
     </div>
+
+    <div class="product">
+      <h2>✏️ Custom Pencil</h2>
+      <button class="coming-soon">Coming Soon</button>
+    </div>
+
+    <div class="product">
+      <h2>🔖 Bookmark</h2>
+      <button class="coming-soon">Coming Soon</button>
+    </div>
+
+    <!-- Stripe test item -->
+    <div class="product">
+      <h2>🧪 Test Item (Free)</h2>
+      <button id="checkout-button" class="buy-btn">Buy for $0.00</button>
+      <div class="note">Secure Stripe Checkout enabled</div>
+    </div>
+
   </div>
 
-  <div class="wishlist-page" id="wishlist-page">
-    <button class="back-btn" onclick="showProducts()">← Back to Store</button>
-    <h2>Your Wishlist</h2>
-    <div id="wishlist-items"></div>
-  </div>
-
-  <div class="cart-page" id="cart-page">
-    <button class="back-btn" onclick="showProducts()">← Back to Store</button>
-    <h2>Your Cart</h2>
-    <p>(Cart functionality coming soon!)</p>
-  </div>
-
+  <!-- Stripe.js -->
+  <script src="https://js.stripe.com/v3/"></script>
   <script>
-    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    // Replace this with your actual Netlify backend URL
+    const backendUrl = "https://heartfelt-banoffee-296ba3.netlify.app/.netlify/functions/create-checkout-session";
 
-    function addToWishlist(itemName) {
-      if (!wishlist.includes(itemName)) {
-        wishlist.push(itemName);
-        localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        showNotification("✔️ Added to Wishlist");
-      } else {
-        showNotification("❗ Already in Wishlist");
-      }
-    }
+    const stripe = Stripe("pk_test_YourPublishableKeyHere"); // Replace with your Stripe publishable key
 
-    function showNotification(message) {
-      const notify = document.getElementById('notify');
-      notify.textContent = message;
-      notify.style.display = 'block';
-      setTimeout(() => {
-        notify.style.display = 'none';
-      }, 2000);
-    }
-
-    function showWishlist() {
-      document.getElementById("product-container").style.display = "none";
-      document.getElementById("wishlist-page").style.display = "block";
-      document.getElementById("cart-page").style.display = "none";
-
-      const wishlistItems = document.getElementById("wishlist-items");
-      wishlistItems.innerHTML = '';
-
-      if (wishlist.length === 0) {
-        wishlistItems.innerHTML = '<p>No items in your wishlist yet.</p>';
-      } else {
-        wishlist.forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'wishlist-item';
-          div.textContent = item;
-          wishlistItems.appendChild(div);
-        });
-      }
-    }
-
-    function showCart() {
-      document.getElementById("product-container").style.display = "none";
-      document.getElementById("wishlist-page").style.display = "none";
-      document.getElementById("cart-page").style.display = "block";
-    }
-
-    function showProducts() {
-      document.getElementById("wishlist-page").style.display = "none";
-      document.getElementById("cart-page").style.display = "none";
-      document.getElementById("product-container").style.display = "flex";
-    }
-
-    function toggleDropdown() {
-      const tools = document.getElementById("ai-tools");
-      tools.style.display = tools.style.display === "block" ? "none" : "block";
-    }
-
-    function askAI() {
-      const question = document.getElementById("ai-question").value.toLowerCase();
-      const response = document.getElementById("ai-response");
-
-      if (question.includes("price")) {
-        response.textContent = "Prices will be available soon when products are released.";
-      } else if (question.includes("release")) {
-        response.textContent = "Products are coming soon! Stay tuned.";
-      } else if (question.includes("how")) {
-        response.textContent = "Ask me anything and I’ll try to help!";
-      } else {
-        response.textContent = "AI: Sorry, I can't answer that yet. Coming soon!";
-      }
-    }
+    document.getElementById("checkout-button").addEventListener("click", () => {
+      fetch(backendUrl, { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            alert("Error: " + data.error);
+            return;
+          }
+          return stripe.redirectToCheckout({ sessionId: data.id });
+        })
+        .then(result => {
+          if (result.error) {
+            alert(result.error.message);
+          }
+        })
+        .catch(err => alert("Network error: " + err.message));
+    });
   </script>
 
 </body>
