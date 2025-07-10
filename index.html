@@ -3,136 +3,148 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>D1SPA4VR Merch Store - Cash App</title>
+<title>D1SPA4VR Merch</title>
 <style>
   body {
-    background: black;
-    color: #ff0033;
+    background-color: #e0e0e0;
     font-family: Arial, sans-serif;
     margin: 0; padding: 0;
+    color: #222;
   }
   header {
     text-align: center;
-    padding: 1rem;
+    padding: 2rem 1rem 1rem;
     font-size: 3rem;
     font-weight: bold;
     color: #ff0033;
-    text-shadow: 0 0 15px #ff0033;
+    text-shadow: 0 0 10px #ff0033, 0 0 20px #ff0033;
   }
-  nav {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
+  .nav {
+    text-align: center;
     margin-bottom: 1rem;
   }
-  nav button {
-    background: none;
-    border: 2px solid #ff0033;
+  .nav button {
+    margin: 0.3rem;
+    padding: 0.4rem 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff0033;
+    color: white;
+    cursor: pointer;
+  }
+  .wishlist-container {
+    display: none;
+    background: white;
+    padding: 1rem;
+    margin: 1rem auto;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .wishlist-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.4rem 0;
+    font-weight: bold;
+  }
+  .remove-btn {
     color: #ff0033;
-    padding: 0.5rem 1rem;
     font-size: 1rem;
     cursor: pointer;
-    border-radius: 5px;
-    transition: background 0.3s ease;
+    border: none;
+    background: none;
+    font-weight: bold;
+    padding: 0;
+    margin-left: 0.5rem;
   }
-  nav button:hover {
-    background: #ff0033;
-    color: black;
-  }
-  #products {
+  .container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1.5rem;
-    padding: 0 1rem 3rem;
+    gap: 2rem;
+    padding: 1rem 2rem 3rem;
   }
   .product {
-    border: 2px solid #ff0033;
+    background: #fff;
     border-radius: 10px;
-    padding: 1rem;
-    width: 220px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    width: 240px;
     text-align: center;
-    color: #ff0033;
-    box-shadow: 0 0 8px #ff0033;
-    position: relative;
+    transition: transform 0.2s ease;
+  }
+  .product:hover {
+    transform: scale(1.03);
   }
   .product h2 {
-    margin: 0 0 1rem;
+    font-size: 1.3rem;
+    color: #ff0033;
+    margin-bottom: 0.5rem;
   }
-  .wishlist-btn, .buy-btn {
-    margin: 0.3rem 0.2rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  .product p {
+    margin: 0.5rem 0;
     font-weight: bold;
+    color: #444;
+  }
+  .btn {
+    display: inline-block;
+    margin: 0.3rem 0.3rem 0 0.3rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  .coming-soon {
+    background-color: #ff0033;
+    color: white;
+  }
+  .coming-soon:hover {
+    background-color: #cc0022;
+  }
+  .try-free {
+    background-color: #22cc33;
+    color: white;
+  }
+  .try-free:hover {
+    background-color: #1a9926;
   }
   .wishlist-btn {
-    background: #330000;
-    color: #ff0033;
-    border: 1.5px solid #ff0033;
+    background-color: #ff0033;
+    color: white;
   }
   .wishlist-btn:hover {
-    background: #ff0033;
-    color: black;
+    background-color: #cc0022;
   }
-  .buy-btn {
-    background: #ff0033;
-    color: black;
-    text-decoration: none;
-    display: inline-block;
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.9rem;
+    color: #555;
   }
-  .buy-btn:hover {
-    background: #cc0022;
-  }
-  #wishlist {
-    display: none;
-    padding: 1rem;
-    max-width: 400px;
-    margin: 0 auto 2rem;
-    border: 2px solid #ff0033;
-    border-radius: 10px;
-  }
-  #wishlist h3 {
-    margin-top: 0;
-  }
-  #notification {
+  /* Fade-in message */
+  #fade-msg {
     position: fixed;
-    top: 10px;
+    top: 1rem;
     left: 50%;
     transform: translateX(-50%);
-    background: #00ff00;
-    color: black;
-    padding: 0.7rem 1.5rem;
+    background: #22cc33;
+    color: white;
+    padding: 0.5rem 1.2rem;
     border-radius: 20px;
     font-weight: bold;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.5s ease;
     z-index: 9999;
   }
-  .coming-soon-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: black;
-    border: 3px solid #ff0033;
-    padding: 2rem 3rem;
-    color: #ff0033;
-    font-weight: bold;
-    font-size: 1.5rem;
-    border-radius: 15px;
-    box-shadow: 0 0 15px #ff0033;
-    z-index: 10000;
-    display: none;
-  }
-  .coming-soon-popup.show {
-    display: block;
-    animation: flicker 1.5s infinite;
-  }
-  @keyframes flicker {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+  #fade-msg.show {
+    opacity: 1;
+    pointer-events: auto;
   }
 </style>
 </head>
@@ -140,117 +152,116 @@
 
 <header>D1SPA4VR Merch</header>
 
-<nav>
-  <button id="show-products-btn">Products</button>
-  <button id="show-wishlist-btn">Wishlist</button>
-</nav>
-
-<div id="notification">Added to wishlist ✔️</div>
-
-<div id="products">
-  <div class="product" data-name="Sticker Pack 10" data-price="10.00">
-    <h2>🎨 Sticker Pack 10 — $10.00</h2>
-    <a href="https://cash.app/$D1SPA4VE?amount=10.00" target="_blank" rel="noopener" class="buy-btn">Buy with Cash App</a>
-    <button class="wishlist-btn">Add to Wishlist</button>
-  </div>
-  <div class="product" data-name="Sticker Pack 8" data-price="8.00">
-    <h2>🖼️ Sticker Pack 8 — $8.00</h2>
-    <button class="buy-btn coming-soon-btn">Buy Now</button>
-    <button class="wishlist-btn">Add to Wishlist</button>
-  </div>
-  <div class="product" data-name="Sticker Pack 4" data-price="4.00">
-    <h2>🧷 Sticker Pack 4 — $4.00</h2>
-    <button class="buy-btn coming-soon-btn">Buy Now</button>
-    <button class="wishlist-btn">Add to Wishlist</button>
-  </div>
-  <div class="product" data-name="Custom Pencil" data-price="5.00">
-    <h2>✏️ Custom Pencil — $5.00</h2>
-    <button class="buy-btn coming-soon-btn">Buy Now</button>
-    <button class="wishlist-btn">Add to Wishlist</button>
-  </div>
-  <div class="product" data-name="Bookmark" data-price="3.00">
-    <h2>🔖 Bookmark — $3.00</h2>
-    <button class="buy-btn coming-soon-btn">Buy Now</button>
-    <button class="wishlist-btn">Add to Wishlist</button>
-  </div>
-  <div class="product" data-name="Test Item (Free)" data-price="0.00">
-    <h2>🆓 Test Item (Free) — $0.00</h2>
-    <a href="https://cash.app/$D1SPA4VE?amount=0.00" target="_blank" rel="noopener" class="buy-btn">Buy with Cash App</a>
-    <button class="wishlist-btn">Add to Wishlist</button>
-  </div>
+<div class="nav">
+  <button onclick="toggleWishlist()">View Wishlist ❤️</button>
 </div>
 
-<div id="wishlist">
-  <h3>Your Wishlist</h3>
-  <ul id="wishlist-items"></ul>
-</div>
+<div id="wishlist" class="wishlist-container"></div>
 
-<div class="coming-soon-popup" id="comingSoonPopup">Coming Soon!</div>
+<div class="container" id="product-list"></div>
+
+<div id="fade-msg">Added to wishlist ✔️</div>
+
+<footer>
+  📦 After you pay, please <a href="https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=header" target="_blank" rel="noopener">fill out this order form</a> with your shipping info.
+</footer>
 
 <script>
-  // Wishlist logic
-  const wishlistBtnClass = 'wishlist-btn';
-  const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-  const wishlistItemsEl = document.getElementById('wishlist-items');
-  const notificationEl = document.getElementById('notification');
-  const comingSoonPopup = document.getElementById('comingSoonPopup');
+  const products = [
+    { name: "✏️ Custom Pencil", price: 5, buyable: false },
+    { name: "🔖 Bookmark", price: 3, buyable: false },
+    { name: "🎨 Sticker Pack 10", price: 10, buyable: false },
+    { name: "🖼️ Sticker Pack 8", price: 8, buyable: false },
+    { name: "🧷 Sticker Pack 4", price: 4, buyable: false },
+    { name: "🧃 Sticker", price: 2, buyable: false },
+    { name: "🆓 Test Item (TEMP)", price: 0, buyable: true, freeLink: "https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=header" }
+  ];
 
-  function updateWishlistUI() {
-    wishlistItemsEl.innerHTML = '';
-    if (wishlist.length === 0) {
-      wishlistItemsEl.innerHTML = '<li>Your wishlist is empty.</li>';
+  const productList = document.getElementById("product-list");
+  const wishlistContainer = document.getElementById("wishlist");
+  const fadeMsg = document.getElementById("fade-msg");
+
+  // Load wishlist from localStorage or empty
+  let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+  function renderProducts() {
+    productList.innerHTML = "";
+    products.forEach(prod => {
+      const div = document.createElement("div");
+      div.className = "product";
+
+      div.innerHTML = `
+        <h2>${prod.name}</h2>
+        <p>${prod.price === 0 ? "Free" : "$" + prod.price.toFixed(2)}</p>
+        ${
+          prod.buyable 
+            ? `<a href="${prod.freeLink}" target="_blank" class="btn try-free">Try for Free</a>` 
+            : `<button class="btn coming-soon" onclick="comingSoon()">Coming Soon</button>`
+        }
+        <button class="btn wishlist-btn" onclick="addToWishlist('${prod.name}')">Wishlist ❤️</button>
+      `;
+
+      productList.appendChild(div);
+    });
+  }
+
+  function comingSoon() {
+    alert("🚧 This product is coming soon!");
+  }
+
+  function addToWishlist(name) {
+    if (!wishlist.includes(name)) {
+      wishlist.push(name);
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      showFadeMsg();
+      renderWishlist();
     } else {
+      alert("This item is already in your wishlist.");
+    }
+  }
+
+  function removeFromWishlist(name) {
+    wishlist = wishlist.filter(item => item !== name);
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    renderWishlist();
+  }
+
+  function renderWishlist() {
+    if (wishlist.length === 0) {
+      wishlistContainer.innerHTML = "<p>Your wishlist is empty.</p>";
+    } else {
+      wishlistContainer.innerHTML = "";
       wishlist.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        wishlistItemsEl.appendChild(li);
+        const div = document.createElement("div");
+        div.className = "wishlist-item";
+        div.innerHTML = `
+          <span>${item}</span>
+          <button class="remove-btn" title="Remove from wishlist" onclick="removeFromWishlist('${item}')">✕</button>
+        `;
+        wishlistContainer.appendChild(div);
       });
     }
   }
 
-  function showNotification(text) {
-    notificationEl.textContent = text;
-    notificationEl.style.opacity = '1';
-    setTimeout(() => {
-      notificationEl.style.opacity = '0';
-    }, 1500);
+  function toggleWishlist() {
+    if (wishlistContainer.style.display === "block") {
+      wishlistContainer.style.display = "none";
+    } else {
+      wishlistContainer.style.display = "block";
+      renderWishlist();
+    }
   }
 
-  document.querySelectorAll(`.${wishlistBtnClass}`).forEach(button => {
-    button.addEventListener('click', (e) => {
-      const productEl = e.target.closest('.product');
-      const productName = productEl.getAttribute('data-name');
-      if (!wishlist.includes(productName)) {
-        wishlist.push(productName);
-        localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        updateWishlistUI();
-        showNotification('Added to wishlist ✔️');
-      }
-    });
-  });
+  function showFadeMsg() {
+    fadeMsg.classList.add("show");
+    setTimeout(() => {
+      fadeMsg.classList.remove("show");
+    }, 2000);
+  }
 
-  updateWishlistUI();
-
-  // Nav buttons logic
-  const productsEl = document.getElementById('products');
-  const wishlistEl = document.getElementById('wishlist');
-
-  document.getElementById('show-products-btn').addEventListener('click', () => {
-    productsEl.style.display = 'flex';
-    wishlistEl.style.display = 'none';
-  });
-  document.getElementById('show-wishlist-btn').addEventListener('click', () => {
-    productsEl.style.display = 'none';
-    wishlistEl.style.display = 'block';
-  });
-
-  // Coming Soon popup
-  document.querySelectorAll('.coming-soon-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      comingSoonPopup.classList.add('show');
-      setTimeout(() => comingSoonPopup.classList.remove('show'), 2000);
-    });
-  });
+  // Initial render
+  renderProducts();
 </script>
+
 </body>
 </html>
