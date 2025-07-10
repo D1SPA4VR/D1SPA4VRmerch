@@ -99,6 +99,8 @@
       font-weight: bold;
       cursor: pointer;
       margin-top: 0.5rem;
+      text-decoration: none;
+      display: inline-block;
     }
     .buy-btn:disabled {
       background-color: #555;
@@ -172,148 +174,176 @@
       display: inline-block;
       text-decoration: none;
     }
+    #adminPanel {
+      padding: 2rem;
+      display: none;
+      background: #222;
+      color: white;
+    }
+    #adminPanel h2 {
+      text-align: center;
+      color: #ff0033;
+    }
+    #adminPanel input {
+      padding: 0.5rem;
+      margin: 0.3rem 0;
+      width: 100%;
+      border-radius: 5px;
+      border: none;
+    }
+    #adminPanel button {
+      margin-top: 0.5rem;
+      background: #28a745;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-
-<!-- Startup Loading Overlay -->
 <div id="loadingOverlay">Loading D1SPA4VR Merch...</div>
-
 <header>D1SPA4VR Merch</header>
-
 <div class="tabs">
   <button onclick="showPage('home')">🏠 Home</button>
   <button onclick="showPage('wishlist')">💖 Wishlist</button>
   <button onclick="showPage('cart')">🛒 Cart</button>
+  <button onclick="showPage('adminPanel')">⚙️ Admin</button>
 </div>
-
 <div id="home" class="page visible">
   <div class="container" id="productList"></div>
   <div class="footer">All prices USD. Plus realistic shipping & tax.</div>
 </div>
-
 <div id="productPage" class="page">
   <div class="product-detail" id="productDetail"></div>
   <a href="#" class="back-btn" onclick="showPage('home')">← Back to home</a>
 </div>
-
 <div id="wishlist" class="page list-page">
   <ul id="wishlistItems"></ul>
 </div>
-
 <div id="cart" class="page list-page">
   <ul id="cartItems"></ul>
 </div>
-
+<div id="adminPanel" class="page">
+  <h2>Admin Panel</h2>
+  <input type="text" id="newName" placeholder="Product name" />
+  <input type="text" id="newDesc" placeholder="Description" />
+  <input type="number" id="newPrice" placeholder="Price" />
+  <input type="number" id="newShipping" placeholder="Shipping" />
+  <button onclick="addProduct()">Add Product</button>
+</div>
 <script>
-  // Startup animation
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      document.getElementById("loadingOverlay").classList.add("fade-out");
-    }, 1500);
-  });
+window.addEventListener("load", () => {
+  setTimeout(() => document.getElementById("loadingOverlay").classList.add("fade-out"), 1500);
+});
 
-  const products = [
-    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 1.50, inStock: true },
-    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 1.20, inStock: true },
-    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 1.80, inStock: true },
-    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 1.70, inStock: true },
-    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 1.60, inStock: true },
-    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 1.10, inStock: true }
-  ];
+const products = [
+  { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 1.50, inStock: true },
+  { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 1.20, inStock: true },
+  { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 1.80, inStock: true },
+  { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 1.70, inStock: true },
+  { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 1.60, inStock: true },
+  { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 1.10, inStock: true }
+];
 
-  let wishlist = [];
-  let cart = [];
+let wishlist = [];
+let cart = [];
 
-  function showPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
-    document.getElementById(id).classList.add('visible');
-    if (id === "wishlist") renderList("wishlist");
-    if (id === "cart") renderList("cart");
-  }
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+  if (id === "wishlist") renderList("wishlist");
+  if (id === "cart") renderList("cart");
+}
 
-  function renderProducts() {
-    const container = document.getElementById("productList");
-    container.innerHTML = "";
-    products.forEach((p, i) => {
-      const stockText = p.inStock ?
-        `<div class="stock-label in-stock">In Stock</div>` :
-        `<div class="stock-label out-stock">Out of Stock</div>`;
-
-      const buyBtn = p.inStock ?
-        `<button class="buy-btn" onclick="viewProduct(${i})">Buy</button>` :
-        `<button class="buy-btn" disabled>Out of Stock</button>`;
-
-      const card = document.createElement("div");
-      card.className = "product";
-      card.innerHTML = `
-        <h2>${p.name}</h2>
-        <p>$${p.price.toFixed(2)}</p>
-        <p>+ $${p.shipping.toFixed(2)} shipping</p>
-        ${stockText}
-        ${buyBtn}
-      `;
-      container.appendChild(card);
-    });
-  }
-
-  function viewProduct(i) {
-    const p = products[i];
-    const stockText = p.inStock ?
-      `<div class="stock-label in-stock">In Stock</div>` :
-      `<div class="stock-label out-stock">Out of Stock</div>`;
-
-    const buyBtn = p.inStock ?
-      `<a href="https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform" target="_blank" class="buy-btn">Buy Now</a>` :
-      `<button class="buy-btn" disabled>Out of Stock</button>`;
-
-    document.getElementById("productDetail").innerHTML = `
-      <div class="left">
-        <h2>${p.name}</h2>
-        <p><strong>Price:</strong> $${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
-        <p>${p.desc}</p>
-        ${stockText}
+function renderProducts() {
+  const container = document.getElementById("productList");
+  container.innerHTML = "";
+  products.forEach((p, i) => {
+    const card = document.createElement("div");
+    card.className = "product";
+    card.innerHTML = `
+      <h2>${p.name}</h2>
+      <p>$${p.price.toFixed(2)}</p>
+      <p>+ $${p.shipping.toFixed(2)} shipping</p>
+      <div class="stock-label ${p.inStock ? 'in-stock' : 'out-stock'}">
+        ${p.inStock ? 'In Stock' : 'Out of Stock'}
       </div>
-      <div class="right">
-        <button class="wishlist-btn" onclick="addToList('wishlist', ${i})">Add to Wishlist</button>
-        <button class="cart-btn" onclick="addToList('cart', ${i})">Add to Cart</button>
-        ${buyBtn}
-      </div>
+      <button class="buy-btn" onclick="viewProduct(${i})" ${!p.inStock ? 'disabled' : ''}>${p.inStock ? 'Buy' : 'Out of Stock'}</button>
     `;
-    showPage("productPage");
-  }
+    container.appendChild(card);
+  });
+}
 
-  function addToList(type, index) {
-    const list = (type === "wishlist" ? wishlist : cart);
-    const item = products[index];
-    if (!list.find(p => p.name === item.name)) {
-      list.push(item);
-      renderList(type);
-      alert(`Added to ${type} ✔️`);
-    } else {
-      alert("Already added!");
-    }
-  }
+function viewProduct(i) {
+  const p = products[i];
+  const stockText = p.inStock ?
+    `<div class="stock-label in-stock">In Stock</div>` :
+    `<div class="stock-label out-stock">Out of Stock</div>`;
 
-  function renderList(type) {
-    const list = (type === "wishlist" ? wishlist : cart);
-    const ul = document.getElementById(type + "Items");
-    ul.innerHTML = "";
-    list.forEach((p, i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `${p.name} <span class="remove" onclick="removeFromList('${type}', ${i})">❌</span>`;
-      ul.appendChild(li);
-    });
-  }
+  const buyBtn = p.inStock ?
+    `<a href="https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform" target="_blank" class="buy-btn">Buy Now</a>` :
+    `<button class="buy-btn" disabled>Out of Stock</button>`;
 
-  function removeFromList(type, index) {
-    if (type === "wishlist") wishlist.splice(index, 1);
-    if (type === "cart") cart.splice(index, 1);
+  document.getElementById("productDetail").innerHTML = `
+    <div class="left">
+      <h2>${p.name}</h2>
+      <p><strong>Price:</strong> $${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
+      <p>${p.desc}</p>
+      ${stockText}
+    </div>
+    <div class="right">
+      <button class="wishlist-btn" onclick="addToList('wishlist', ${i})">Add to Wishlist</button>
+      <button class="cart-btn" onclick="addToList('cart', ${i})">Add to Cart</button>
+      ${buyBtn}
+    </div>
+  `;
+  showPage("productPage");
+}
+
+function addToList(type, index) {
+  const list = (type === "wishlist" ? wishlist : cart);
+  const item = products[index];
+  if (!list.find(p => p.name === item.name)) {
+    list.push(item);
     renderList(type);
+    alert(`Added to ${type} ✔️`);
+  } else {
+    alert("Already added!");
   }
+}
 
+function renderList(type) {
+  const list = (type === "wishlist" ? wishlist : cart);
+  const ul = document.getElementById(type + "Items");
+  ul.innerHTML = "";
+  list.forEach((p, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `${p.name} <span class="remove" onclick="removeFromList('${type}', ${i})">❌</span>`;
+    ul.appendChild(li);
+  });
+}
+
+function removeFromList(type, index) {
+  if (type === "wishlist") wishlist.splice(index, 1);
+  if (type === "cart") cart.splice(index, 1);
+  renderList(type);
+}
+
+function addProduct() {
+  const name = document.getElementById("newName").value;
+  const desc = document.getElementById("newDesc").value;
+  const price = parseFloat(document.getElementById("newPrice").value);
+  const shipping = parseFloat(document.getElementById("newShipping").value);
+  if (!name || !desc || isNaN(price) || isNaN(shipping)) return alert("Fill out all fields correctly");
+  products.push({ name, desc, price, shipping, inStock: true });
   renderProducts();
-</script>
+  alert("Product added!");
+}
 
+renderProducts();
+</script>
 </body>
 </html>
