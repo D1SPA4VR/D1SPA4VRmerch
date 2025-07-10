@@ -9,26 +9,12 @@
   #loadingOverlay {
     position: fixed; top:0; left:0; width:100vw; height:100vh;
     background: #111; color:#ff0033; font-family: Arial, sans-serif;
-    display:flex; flex-direction: column; justify-content:center; align-items:center;
+    display:flex; justify-content:center; align-items:center;
     font-size: 2rem; z-index: 9999;
     transition: opacity 0.5s ease;
   }
   #loadingOverlay.fade-out {
     opacity: 0; pointer-events: none;
-  }
-
-  /* Spinner */
-  #spinner {
-    margin-top: 1rem;
-    width: 48px;
-    height: 48px;
-    border: 5px solid #ff0033;
-    border-top: 5px solid transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
   }
 
   body {
@@ -333,10 +319,7 @@
 <body>
 
 <!-- Loading Overlay -->
-<div id="loadingOverlay">
-  Loading D1SPA4VR Merch...
-  <div id="spinner"></div>
-</div>
+<div id="loadingOverlay">Loading D1SPA4VR Merch...</div>
 
 <header>D1SPA4VR Merch</header>
 
@@ -446,17 +429,17 @@
     container.innerHTML = "";
     products.forEach((p, i) => {
       const stockText = p.inStock ?
-        `<div class="stock-label in-stock">In Stock</div>` :
-        `<div class="stock-label out-stock">Out of Stock</div>`;
+        <div class="stock-label in-stock">In Stock</div> :
+        <div class="stock-label out-stock">Out of Stock</div>;
 
       const card = document.createElement("div");
       card.className = "product";
-      card.innerHTML = `
+      card.innerHTML = 
         <h2>${p.name}</h2>
         <p>$${p.price.toFixed(2)}</p>
         <p>+ $${p.shipping.toFixed(2)} shipping</p>
         ${stockText}
-      `;
+      ;
       card.onclick = () => viewProduct(i);
       container.appendChild(card);
     });
@@ -466,14 +449,14 @@
   function viewProduct(i) {
     const p = products[i];
     const stockText = p.inStock ?
-      `<div class="stock-label in-stock">In Stock</div>` :
-      `<div class="stock-label out-stock">Out of Stock</div>`;
+      <div class="stock-label in-stock">In Stock</div> :
+      <div class="stock-label out-stock">Out of Stock</div>;
 
     const buyBtn = p.inStock ?
-      `<a href="https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform" target="_blank" class="buy-btn">Buy Now</a>` :
-      `<button class="buy-btn" disabled>Out of Stock</button>`;
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform" target="_blank" class="buy-btn">Buy Now</a> :
+      <button class="buy-btn" disabled>Out of Stock</button>;
 
-    document.getElementById("productDetail").innerHTML = `
+    document.getElementById("productDetail").innerHTML = 
       <div class="left">
         <h2>${p.name}</h2>
         <p><strong>Price:</strong> $${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
@@ -485,7 +468,7 @@
         <button class="cart-btn" onclick="addToList('cart', ${i})">Add to Cart</button>
         ${buyBtn}
       </div>
-    `;
+    ;
     showPage("productPage");
   }
 
@@ -506,10 +489,10 @@
     ul.innerHTML = "";
     list.forEach((p, i) => {
       const li = document.createElement("li");
-      li.innerHTML = `
+      li.innerHTML = 
         ${p.name} 
         <span class="remove" onclick="removeFromList('${type}', ${i})">❌</span>
-      `;
+      ;
       ul.appendChild(li);
     });
   }
@@ -556,10 +539,10 @@
       const btnClass = p.inStock ? "in-stock-btn" : "out-stock-btn";
       const btnText = p.inStock ? "Mark Out of Stock" : "Mark In Stock";
       const li = document.createElement("li");
-      li.innerHTML = `
+      li.innerHTML = 
         ${p.name}
         <button class="toggle-stock ${btnClass}" onclick="toggleStock(${i})">${btnText}</button>
-      `;
+      ;
       ul.appendChild(li);
     });
   }
