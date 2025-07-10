@@ -226,3 +226,168 @@
   </div>
 
   <button id="ownerBtn" onclick="ownerLogin()">Owner</button>
+<script>
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBDeI1Vtvnwpv4GPJfH9oqrhoD1BVVqebk",
+    authDomain: "d1spa4vr-merch.firebaseapp.com",
+    databaseURL: "https://d1spa4vr-merch-default-rtdb.firebaseio.com",
+    projectId: "d1spa4vr-merch",
+    storageBucket: "d1spa4vr-merch.appspot.com",
+    messagingSenderId: "862122277887",
+    appId: "1:862122277887:web:9db63669e5b2dac4f445ca"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Default product list
+  const defaultProducts = [
+    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 3.5, inStock: false },
+    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 3.5, inStock: false },
+    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 3.5, inStock: false },
+    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 3.5, inStock: false },
+    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 3.5, inStock: false },
+    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 3.5, inStock: false }
+  ];
+
+  let products = [...defaultProducts];
+  let wishlist = [];
+  let cart = [];
+
+  // Sync with Firebase
+  db.ref("products").on("value", (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      products = data;
+      renderProducts();
+    } else {
+      db.ref("products").set(products); // First time
+    }
+  });
+
+  function updateFirebase() {
+    db.ref("products").set(products);
+  }
+
+  function showPage(id) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("visible"));
+    document.getElementById(id).classList.add("visible");
+    if (id === "wishlist") renderList("wishlist");
+    if (id === "cart") renderList("cart");
+  }
+
+  function renderProducts() {
+    const container = document.getElementById("productList");
+    container.innerHTML = "";
+    products.forEach((p, i) => {
+      const div = document.createElement("div");
+      div.className = "product";
+      div.innerHTML = `
+        <h2>${p.name}</h2>
+        <p>$${p.price.toFixed(2)}</p>
+        <p>+ $${p.shipping.toFixed(2)} shipping</p>
+        <div class="stock-label ${p.inStock ? "in-stock" : "out-stock"}">
+          ${p.inStock ? "In Stock" : "Out of Stock"}
+        </div>
+        <button class="buy-btn" ${p.inStock ? `onclick="viewProduct(${i})"` : "disabled"}>
+          ${p.inStock ? "Buy" : "Out of Stock"}
+        </button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function viewProduct(index) {
+    const p = products[index];
+    document.getElementById("productDetail").innerHTML = `
+      <div class="left">
+        <h2>${p.name}</h2>
+        <p><strong>Price:</strong> $${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
+        <p>${p.desc}</p>
+        <p class="stock-label ${p.inStock ? "in-stock" : "out-stock"}">
+          ${p.inStock ? "In Stock" : "Out of Stock"}
+        </p>
+      </div>
+      <div class="right">
+        <button class="wishlist-btn" onclick="addToList('wishlist', ${index})">Add to Wishlist</button>
+        <button class="cart-btn" onclick="addToList('cart', ${index})">Add to Cart</button>
+        ${p.inStock ? `<button class="buy-btn-full" onclick="buyProduct()">Buy Now</button>` : ""}
+      </div>
+    `;
+    showPage("productPage");
+  }
+
+  function buyProduct() {
+    window.open("https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform", "_blank");
+  }
+
+  function addToList(type, index) {
+    const list = type === "wishlist" ? wishlist : cart;
+    const item = products[index];
+    if (!list.find(p => p.name === item.name)) {
+      list.push(item);
+      renderList(type);
+      alert(`Added to ${type} ✔️`);
+    } else {
+      alert("Already in list!");
+    }
+  }
+
+  function renderList(type) {
+    const list = type === "wishlist" ? wishlist : cart;
+    const ul = document.getElementById(type + "Items");
+    ul.innerHTML = "";
+    list.forEach((item, i) => {
+      const li = document.createElement("li");
+      li.innerHTML = `${item.name} <span style="color:red;cursor:pointer;" onclick="removeFromList('${type}', ${i})">❌</span>`;
+      ul.appendChild(li);
+    });
+  }
+
+  function removeFromList(type, index) {
+    const list = type === "wishlist" ? wishlist : cart;
+    list.splice(index, 1);
+    renderList(type);
+  }
+
+  // 🔐 Owner logic
+  const password = "567812";
+  function ownerLogin() {
+    const input = prompt("Enter Owner Password:");
+    if (input === password) {
+      renderOwnerPanel();
+      showPage("ownerPanel");
+    } else {
+      alert("Incorrect password.");
+    }
+  }
+
+  function renderOwnerPanel() {
+    const ul = document.getElementById("ownerProductList");
+    ul.innerHTML = "";
+    products.forEach((p, i) => {
+      const li = document.createElement("li");
+      const btnClass = p.inStock ? "in-stock-btn" : "out-stock-btn";
+      const btnText = p.inStock ? "Put Out of Stock" : "Put In Stock";
+      li.innerHTML = `
+        ${p.name}
+        <button class="toggle-stock ${btnClass}" onclick="toggleStock(${i}, this)">${btnText}</button>
+      `;
+      ul.appendChild(li);
+    });
+  }
+
+  function toggleStock(index, btn) {
+    const product = products[index];
+    product.inStock = !product.inStock;
+    btn.textContent = product.inStock ? "Put Out of Stock" : "Put In Stock";
+    btn.className = "toggle-stock " + (product.inStock ? "in-stock-btn" : "out-stock-btn");
+    renderProducts();
+    updateFirebase();
+  }
+
+  renderProducts(); // on load
+</script>
+</body>
+</html>
