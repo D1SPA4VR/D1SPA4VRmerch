@@ -1,323 +1,324 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>D1SPA4VR Merch</title>
-  <style>
-    /* --- Loading Screen --- */
-    #loadingOverlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background-color: #111;
-      color: #ff0033;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
-      z-index: 9999;
-      transition: opacity 0.5s ease;
-    }
-    #loadingOverlay.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>D1SPA4VR Merch</title>
+<style>
+  /* Loading Overlay */
+  #loadingOverlay {
+    position: fixed; top:0; left:0; width:100vw; height:100vh;
+    background: #111; color:#ff0033; font-family: Arial, sans-serif;
+    display:flex; justify-content:center; align-items:center;
+    font-size: 2rem; z-index: 9999;
+    transition: opacity 0.5s ease;
+  }
+  #loadingOverlay.fade-out {
+    opacity: 0; pointer-events: none;
+  }
 
-    body {
-      margin: 0;
-      background: #2f2f2f;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-    header {
-      background: #111;
-      padding: 1rem;
-      text-align: center;
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #ff0033;
-      text-shadow: 0 0 10px #ff0033;
-    }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      background: #1e1e1e;
-      padding: 1rem;
-      gap: 1rem;
-    }
-    .tabs button {
-      background: #ff0033;
-      color: white;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-      padding: 2rem;
-    }
-    .product {
-      background: #444;
-      border-radius: 10px;
-      padding: 1rem;
-      width: 220px;
-      text-align: center;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      position: relative;
-    }
-    .product:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px red;
-    }
-    .product h2 {
-      color: #ff0033;
-      font-size: 1.2rem;
-    }
-    .stock-label {
-      font-weight: bold;
-      margin-top: 0.3rem;
-    }
-    .in-stock {
-      color: #28a745;
-    }
-    .out-stock {
-      color: #ff4444;
-    }
-    .buy-btn {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 0.4rem 1rem;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
-    .buy-btn:disabled {
-      background-color: #555;
-      cursor: not-allowed;
-    }
-    .page {
-      display: none;
-    }
-    .visible {
-      display: block;
-    }
-    .footer {
-      text-align: center;
-      padding: 1rem;
-      color: #ccc;
-      font-size: 0.9rem;
-    }
-    .product-detail {
-      display: flex;
-      justify-content: space-between;
-      background: #3b3b3b;
-      padding: 2rem;
-      margin: 2rem;
-      border-radius: 10px;
-    }
-    .product-detail .left {
-      max-width: 60%;
-    }
-    .product-detail .right {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      justify-content: center;
-    }
-    .product-detail button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .wishlist-btn {
-      background-color: #ff9933;
-      color: #000;
-    }
-    .cart-btn {
-      background-color: #007bff;
-      color: #fff;
-    }
-    .list-page ul {
-      list-style: none;
-      padding: 2rem;
-    }
-    .list-page li {
-      background: #444;
-      padding: 0.8rem 1rem;
-      border-radius: 5px;
-      margin-bottom: 0.5rem;
-      display: flex;
-      justify-content: space-between;
-    }
-    .remove {
-      color: red;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .back-btn {
-      color: #ccc;
-      margin: 2rem;
-      display: inline-block;
-      text-decoration: none;
-    }
+  body {
+    margin: 0; background: #2f2f2f; color: white;
+    font-family: Arial, sans-serif;
+  }
+  header {
+    background: #111;
+    padding: 1rem;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ff0033;
+    text-shadow: 0 0 10px #ff0033;
+  }
+  .tabs {
+    display: flex;
+    justify-content: center;
+    background: #1e1e1e;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .tabs button {
+    background: #ff0033;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  .product {
+    background: #444;
+    border-radius: 10px;
+    padding: 1rem;
+    width: 220px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    cursor: pointer;
+  }
+  .product:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px red;
+  }
+  .product h2 {
+    color: #ff0033;
+    font-size: 1.2rem;
+  }
+  .stock-label {
+    font-weight: bold;
+    margin-top: 0.3rem;
+  }
+  .in-stock {
+    color: #28a745;
+  }
+  .out-stock {
+    color: #ff4444;
+  }
+  .buy-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .buy-btn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+  }
+  .page {
+    display: none;
+  }
+  .visible {
+    display: block;
+  }
+  .footer {
+    text-align: center;
+    padding: 1rem;
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+  .product-detail {
+    display: flex;
+    justify-content: space-between;
+    background: #3b3b3b;
+    padding: 2rem;
+    margin: 2rem;
+    border-radius: 10px;
+  }
+  .product-detail .left {
+    max-width: 60%;
+  }
+  .product-detail .right {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+  }
+  .product-detail button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .wishlist-btn {
+    background-color: #ff9933;
+    color: #000;
+  }
+  .cart-btn {
+    background-color: #007bff;
+    color: #fff;
+  }
+  .list-page ul {
+    list-style: none;
+    padding: 2rem;
+  }
+  .list-page li {
+    background: #444;
+    padding: 0.8rem 1rem;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  .remove {
+    color: red;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .back-btn {
+    color: #ccc;
+    margin: 2rem;
+    display: inline-block;
+    text-decoration: none;
+  }
+  /* Admin button */
+  #adminBtn {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    background: #ff0033;
+    color: white;
+    font-weight: bold;
+    font-size: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 10px;
+    cursor: pointer;
+    box-shadow: 0 0 8px #ff0033;
+    z-index: 9999;
+    user-select: none;
+  }
+  /* Admin Panel */
+  #adminPanel {
+    display: none;
+    padding: 2rem;
+    background: #222;
+    color: white;
+    min-height: 80vh;
+    overflow-y: auto;
+  }
+  #adminPanel.visible {
+    display: block;
+  }
+  #adminPanel h2 {
+    color: #ff0033;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  #adminProductList {
+    list-style: none;
+    padding: 0;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+  }
+  #adminProductList li {
+    background: #444;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #adminProductList button.toggle-stock {
+    padding: 0.4rem 1rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+  }
+  #adminProductList button.in-stock-btn {
+    background-color: #28a745;
+  }
+  #adminProductList button.out-stock-btn {
+    background-color: #ff4444;
+  }
+  #addProductForm {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #333;
+    padding: 1rem;
+    border-radius: 10px;
+  }
+  #addProductForm label {
+    display: block;
+    margin: 0.5rem 0 0.2rem;
+  }
+  #addProductForm input[type=text],
+  #addProductForm input[type=number],
+  #addProductForm textarea {
+    width: 100%;
+    padding: 0.4rem;
+    border-radius: 5px;
+    border: none;
+  }
+  #addProductForm input[type=checkbox] {
+    margin-right: 0.5rem;
+  }
+  #addProductForm button {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    font-weight: bold;
+    background: #ff0033;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+  }
 
-    /* Admin Button */
-    #adminBtn {
-      position: fixed;
-      bottom: 15px;
-      right: 15px;
-      background: #ff0033;
-      color: white;
-      font-weight: bold;
-      font-size: 0.75rem;
-      border: none;
-      border-radius: 5px;
-      padding: 6px 10px;
-      cursor: pointer;
-      box-shadow: 0 0 8px #ff0033;
-      z-index: 9999;
-      user-select: none;
-    }
+  /* Password modal styles */
+  #passwordModal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.75);
+    align-items: center;
+    justify-content: center;
+  }
+  #passwordModal.visible {
+    display: flex;
+  }
+  #passwordBox {
+    background: #222;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 280px;
+    color: white;
+  }
+  #passwordBox h3 {
+    margin-bottom: 1rem;
+    color: #ff0033;
+  }
+  #passwordInput {
+    font-size: 1.5rem;
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: none;
+  }
+  #passwordActions {
+    display: flex;
+    justify-content: space-between;
+  }
+  #passwordActions button {
+    background: #555;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
 
-    /* Password Modal */
-    #passwordModal {
-      display: none;
-      position: fixed;
-      z-index: 10000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.75);
-      align-items: center;
-      justify-content: center;
-    }
-    #passwordBox {
-      background: #222;
-      padding: 2rem;
-      border-radius: 10px;
-      text-align: center;
-      width: 280px;
-      color: white;
-    }
-    #passwordBox h3 {
-      margin-bottom: 1rem;
-      color: #ff0033;
-    }
-    #passwordInput {
-      font-size: 1.5rem;
-      width: 100%;
-      text-align: center;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border-radius: 5px;
-      border: none;
-    }
-    #passwordActions {
-      display: flex;
-      justify-content: space-between;
-    }
-    #passwordActions button {
-      background: #555;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    /* Admin Panel */
-    #adminPanel {
-      display: none;
-      padding: 2rem;
-      background: #222;
-      color: white;
-      min-height: 80vh;
-      overflow-y: auto;
-    }
-    #adminPanel h2 {
-      color: #ff0033;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    #adminPanel ul {
-      list-style: none;
-      padding: 0;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    #adminPanel li {
-      background: #444;
-      padding: 1rem;
-      margin-bottom: 0.8rem;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #adminPanel button.toggle-stock {
-      padding: 0.4rem 1rem;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      color: white;
-    }
-    #adminPanel button.in-stock-btn {
-      background-color: #28a745;
-    }
-    #adminPanel button.out-stock-btn {
-      background-color: #ff4444;
-    }
-
-    /* Add Product Form */
-    #addProductForm {
-      max-width: 600px;
-      margin: 1rem auto 2rem auto;
-      background: #333;
-      padding: 1rem;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-    }
-    #addProductForm input, #addProductForm textarea {
-      padding: 0.5rem;
-      border-radius: 5px;
-      border: none;
-      font-size: 1rem;
-    }
-    #addProductForm label {
-      font-weight: bold;
-      margin-bottom: 0.2rem;
-      color: #ff0033;
-    }
-    #addProductForm button {
-      background: #ff0033;
-      border: none;
-      padding: 0.6rem;
-      font-weight: bold;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
-  </style>
 </head>
 <body>
 
-<!-- Startup Loading Overlay -->
+<!-- Loading Overlay -->
 <div id="loadingOverlay">Loading D1SPA4VR Merch...</div>
 
 <header>D1SPA4VR Merch</header>
@@ -326,8 +327,10 @@
   <button onclick="showPage('home')">🏠 Home</button>
   <button onclick="showPage('wishlist')">💖 Wishlist</button>
   <button onclick="showPage('cart')">🛒 Cart</button>
+  <button onclick="showPage('adminPanel')" id="adminTab" style="display:none">⚙️ Admin Panel</button>
 </div>
 
+<!-- Pages -->
 <div id="home" class="page visible">
   <div class="container" id="productList"></div>
   <div class="footer">All prices USD. Plus realistic shipping & tax.</div>
@@ -346,35 +349,29 @@
   <ul id="cartItems"></ul>
 </div>
 
-<!-- Admin Panel -->
 <div id="adminPanel" class="page">
   <h2>Admin Panel - Stock & Merch Management</h2>
+  <ul id="adminProductList"></ul>
 
   <form id="addProductForm">
-    <label for="newName">Product Name</label>
-    <input type="text" id="newName" placeholder="Product Name" required />
-    
+    <h3>Add New Product</h3>
+    <label for="newName">Name</label>
+    <input type="text" id="newName" required />
     <label for="newPrice">Price (USD)</label>
-    <input type="number" step="0.01" id="newPrice" placeholder="Price" required />
-    
-    <label for="newShipping">Shipping Cost</label>
-    <input type="number" step="0.01" id="newShipping" placeholder="Shipping Cost" required />
-    
+    <input type="number" step="0.01" id="newPrice" required />
+    <label for="newShipping">Shipping Cost (USD)</label>
+    <input type="number" step="0.01" id="newShipping" required />
     <label for="newDesc">Description</label>
-    <textarea id="newDesc" placeholder="Product Description" rows="3" required></textarea>
-    
-    <label>
-      <input type="checkbox" id="newStock" checked />
-      In Stock
-    </label>
-    
+    <textarea id="newDesc" rows="3" required></textarea>
+    <label><input type="checkbox" id="newStock" checked /> In Stock</label>
     <button type="submit">Add Product</button>
   </form>
 
-  <ul id="adminProductList"></ul>
-
   <a href="#" class="back-btn" onclick="showPage('home')">← Back to home</a>
 </div>
+
+<!-- Admin button triggers password modal -->
+<button id="adminBtn" title="Admin Button">Admin</button>
 
 <!-- Password Modal -->
 <div id="passwordModal">
@@ -388,29 +385,36 @@
   </div>
 </div>
 
-<button id="adminBtn" title="Admin Button">Admin</button>
-
 <script>
-  // Startup animation
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      document.getElementById("loadingOverlay").classList.add("fade-out");
-    }, 1500);
-  });
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBDeI1Vtvnwpv4GPJfH9oqrhoD1BVVqebk",
+    authDomain: "d1spa4vr-merch.firebaseapp.com",
+    databaseURL: "https://d1spa4vr-merch-default-rtdb.firebaseio.com",
+    projectId: "d1spa4vr-merch",
+    storageBucket: "d1spa4vr-merch.firebasestorage.app",
+    messagingSenderId: "862122277887",
+    appId: "1:862122277887:web:9db63669e5b2dac4f445ca",
+    measurementId: "G-SQW1MKTQQ9"
+  };
 
-  const products = [
-    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 1.50, inStock: true },
-    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 1.20, inStock: true },
-    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 1.80, inStock: true },
-    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 1.70, inStock: true },
-    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 1.60, inStock: true },
-    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 1.10, inStock: true }
-  ];
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
+  // Local data
+  let products = [];
   let wishlist = [];
   let cart = [];
 
-  // Show page function
+  // Loading overlay fade out
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      document.getElementById("loadingOverlay").classList.add("fade-out");
+    }, 1200);
+  });
+
+  // Pages management
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
     document.getElementById(id).classList.add('visible');
@@ -419,7 +423,7 @@
     if (id === "adminPanel") renderAdminList();
   }
 
-  // Render products list
+  // Render product cards on home page
   function renderProducts() {
     const container = document.getElementById("productList");
     container.innerHTML = "";
@@ -428,10 +432,6 @@
         `<div class="stock-label in-stock">In Stock</div>` :
         `<div class="stock-label out-stock">Out of Stock</div>`;
 
-      const buyBtn = p.inStock ?
-        `<button class="buy-btn" onclick="viewProduct(${i})">Buy</button>` :
-        `<button class="buy-btn" disabled>Out of Stock</button>`;
-
       const card = document.createElement("div");
       card.className = "product";
       card.innerHTML = `
@@ -439,13 +439,13 @@
         <p>$${p.price.toFixed(2)}</p>
         <p>+ $${p.shipping.toFixed(2)} shipping</p>
         ${stockText}
-        ${buyBtn}
       `;
+      card.onclick = () => viewProduct(i);
       container.appendChild(card);
     });
   }
 
-  // View product detail page
+  // Show product detail page with buttons
   function viewProduct(i) {
     const p = products[i];
     const stockText = p.inStock ?
@@ -472,88 +472,104 @@
     showPage("productPage");
   }
 
-  // Add to wishlist or cart
+  // Add item to wishlist or cart
   function addToList(type, index) {
     const list = (type === "wishlist" ? wishlist : cart);
     const item = products[index];
     if (!list.find(p => p.name === item.name)) {
       list.push(item);
       renderList(type);
-      alert(`Added to ${type} ✔️`);
-    } else {
-      alert("Already added!");
     }
   }
 
-  // Render wishlist or cart
+  // Render wishlist or cart items
   function renderList(type) {
     const list = (type === "wishlist" ? wishlist : cart);
     const ul = document.getElementById(type + "Items");
     ul.innerHTML = "";
     list.forEach((p, i) => {
       const li = document.createElement("li");
-      li.innerHTML = `${p.name} <span class="remove" onclick="removeFromList('${type}', ${i})">❌</span>`;
+      li.innerHTML = `
+        ${p.name} 
+        <span class="remove" onclick="removeFromList('${type}', ${i})">❌</span>
+      `;
       ul.appendChild(li);
     });
   }
 
-  // Remove from wishlist or cart
+  // Remove item from wishlist or cart
   function removeFromList(type, index) {
     if (type === "wishlist") wishlist.splice(index, 1);
     if (type === "cart") cart.splice(index, 1);
     renderList(type);
   }
 
-  // Admin password modal logic
+  // Admin password modal control
   const adminBtn = document.getElementById("adminBtn");
   const passwordModal = document.getElementById("passwordModal");
   const passwordInput = document.getElementById("passwordInput");
+  const adminTab = document.getElementById("adminTab");
 
   adminBtn.addEventListener("click", () => {
     passwordInput.value = "";
-    passwordModal.style.display = "flex";
+    passwordModal.classList.add("visible");
     passwordInput.focus();
   });
 
   function submitPassword() {
-    const password = passwordInput.value;
-    if (password === "567812") {
-      passwordModal.style.display = "none";
+    const pwd = passwordInput.value.trim();
+    if (pwd === "567812") {
+      passwordModal.classList.remove("visible");
+      adminTab.style.display = "inline-block";
       showPage("adminPanel");
     } else {
-      alert("Incorrect password.");
-      passwordInput.value = "";
+      alert("Incorrect password!");
       passwordInput.focus();
     }
   }
   function cancelPassword() {
-    passwordModal.style.display = "none";
-    passwordInput.value = "";
+    passwordModal.classList.remove("visible");
   }
 
-  // Render admin product list with stock toggle
+  // Render admin product list with toggle stock buttons
   function renderAdminList() {
     const ul = document.getElementById("adminProductList");
     ul.innerHTML = "";
     products.forEach((p, i) => {
-      const li = document.createElement("li");
       const btnClass = p.inStock ? "in-stock-btn" : "out-stock-btn";
       const btnText = p.inStock ? "Mark Out of Stock" : "Mark In Stock";
+      const li = document.createElement("li");
       li.innerHTML = `
         ${p.name}
-        <button class="toggle-stock ${btnClass}" onclick="toggleStock(${i}, this)">${btnText}</button>
+        <button class="toggle-stock ${btnClass}" onclick="toggleStock(${i})">${btnText}</button>
       `;
       ul.appendChild(li);
     });
   }
 
-  function toggleStock(index, btn) {
+  // Toggle stock status and update Firebase
+  function toggleStock(index) {
     products[index].inStock = !products[index].inStock;
-    renderProducts();
+    updateProductFirebase(index);
     renderAdminList();
+    renderProducts();
   }
 
-  // Add new product from form
+  // Update product in Firebase by index
+  function updateProductFirebase(index) {
+    const key = products[index].key;
+    if (!key) return; // safety
+    const p = products[index];
+    db.ref("products/" + key).set({
+      name: p.name,
+      price: p.price,
+      shipping: p.shipping,
+      desc: p.desc,
+      inStock: p.inStock
+    });
+  }
+
+  // Add new product via form and push to Firebase
   const addProductForm = document.getElementById("addProductForm");
   addProductForm.addEventListener("submit", e => {
     e.preventDefault();
@@ -564,26 +580,40 @@
     const newStock = document.getElementById("newStock").checked;
 
     if (!newName || isNaN(newPrice) || isNaN(newShipping) || !newDesc) {
-      alert("Please fill out all fields correctly.");
+      alert("Please fill in all fields correctly.");
       return;
     }
 
-    products.push({
+    // Push new product to Firebase
+    const newProductRef = db.ref("products").push();
+    newProductRef.set({
       name: newName,
       price: newPrice,
       shipping: newShipping,
       desc: newDesc,
       inStock: newStock
     });
-    renderProducts();
-    renderAdminList();
+
     addProductForm.reset();
     alert("Product added!");
   });
 
-  renderProducts();
+  // Load products from Firebase realtime and sync
+  db.ref("products").on("value", snapshot => {
+    const data = snapshot.val();
+    products = [];
+    if (data) {
+      Object.entries(data).forEach(([key, val]) => {
+        products.push({...val, key});
+      });
+    }
+    renderProducts();
+    if(document.getElementById("adminPanel").classList.contains("visible")) {
+      renderAdminList();
+    }
+  });
+
 </script>
 
 </body>
 </html>
-
