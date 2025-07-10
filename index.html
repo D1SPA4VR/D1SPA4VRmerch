@@ -11,6 +11,8 @@
       color: #fff;
       margin: 0;
       padding: 0;
+      position: relative;
+      min-height: 100vh;
     }
     header {
       background: #111;
@@ -51,6 +53,7 @@
       width: 230px;
       text-align: center;
       transition: transform 0.2s ease;
+      position: relative;
     }
     .product:hover {
       transform: scale(1.03);
@@ -71,6 +74,20 @@
       font-weight: bold;
       cursor: pointer;
       margin-top: 0.5rem;
+    }
+    .buy-btn:disabled {
+      background-color: #555 !important;
+      cursor: not-allowed;
+    }
+    .stock-label {
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+    .in-stock {
+      color: #28a745;
+    }
+    .out-stock {
+      color: #ff4444;
     }
     .page {
       display: none;
@@ -101,6 +118,7 @@
       flex-direction: column;
       justify-content: center;
       gap: 1rem;
+      min-width: 140px;
     }
     .product-detail button {
       padding: 0.5rem 1rem;
@@ -136,11 +154,135 @@
       border-radius: 5px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
     .list-page .remove {
       color: red;
       font-weight: bold;
       font-size: 1rem;
+      cursor: pointer;
+    }
+    /* Owner button */
+    #ownerBtn {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      background: #ff0033;
+      color: white;
+      font-weight: bold;
+      font-size: 0.75rem;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 10px;
+      cursor: pointer;
+      box-shadow: 0 0 8px #ff0033;
+      z-index: 9999;
+      user-select: none;
+    }
+    /* Owner Panel */
+    #ownerPanel {
+      display: none;
+      padding: 2rem;
+      background: #222;
+      color: white;
+      min-height: 80vh;
+      overflow-y: auto;
+    }
+    #ownerPanel h2 {
+      color: #ff0033;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    #ownerPanel ul {
+      list-style: none;
+      padding: 0;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    #ownerPanel li {
+      background: #444;
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #ownerPanel button.toggle-stock {
+      padding: 0.4rem 1rem;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+    }
+    #ownerPanel button.in-stock-btn {
+      background-color: #28a745;
+    }
+    #ownerPanel button.out-stock-btn {
+      background-color: #ff4444;
+    }
+
+    /* Password modal styles */
+    #passwordModal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.75);
+      align-items: center;
+      justify-content: center;
+    }
+    #passwordBox {
+      background: #222;
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      width: 280px;
+      color: white;
+    }
+    #passwordBox h3 {
+      margin-bottom: 1rem;
+      color: #ff0033;
+    }
+    #passwordInput {
+      font-size: 1.5rem;
+      width: 100%;
+      text-align: center;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      border: none;
+    }
+    #keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    #keypad button {
+      font-size: 1.5rem;
+      padding: 0.8rem 0;
+      background: #ff0033;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+      font-weight: bold;
+    }
+    #passwordActions {
+      display: flex;
+      justify-content: space-between;
+    }
+    #passwordActions button {
+      background: #555;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
       cursor: pointer;
     }
   </style>
@@ -177,18 +319,66 @@
   <ul id="cartItems"></ul>
 </div>
 
+<!-- Owner Panel Page -->
+<div id="ownerPanel">
+  <h2>Owner Panel - Stock Management</h2>
+  <ul id="ownerProductList"></ul>
+  <a href="#" class="back-btn" onclick="closeOwnerPanel()">← Back to home</a>
+</div>
+
+<!-- Password Modal -->
+<div id="passwordModal">
+  <div id="passwordBox">
+    <h3>Enter Owner Password</h3>
+    <input type="password" id="passwordInput" maxlength="6" autocomplete="off" />
+    <div id="keypad">
+      <button onclick="pressKey('1')">1</button>
+      <button onclick="pressKey('2')">2</button>
+      <button onclick="pressKey('3')">3</button>
+      <button onclick="pressKey('4')">4</button>
+      <button onclick="pressKey('5')">5</button>
+      <button onclick="pressKey('6')">6</button>
+      <button onclick="pressKey('7')">7</button>
+      <button onclick="pressKey('8')">8</button>
+      <button onclick="pressKey('9')">9</button>
+      <button onclick="backspaceKey()">⌫</button>
+      <button onclick="pressKey('0')">0</button>
+      <button onclick="submitPassword()">OK</button>
+    </div>
+    <div id="passwordActions">
+      <button onclick="cancelPassword()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<button id="ownerBtn" title="Owner Button">Owner</button>
+
 <script>
   const products = [
-    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 3.50 },
-    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 3.50 },
-    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 3.50 },
-    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 3.50 },
-    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 3.50 },
-    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 3.50 }
+    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 3.50, inStock: false },
+    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 3.50, inStock: false },
+    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 3.50, inStock: false },
+    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 3.50, inStock: false },
+    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 3.50, inStock: false },
+    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 3.50, inStock: false }
   ];
 
   let wishlist = [];
   let cart = [];
+
+  function showPage(id) {
+    // Hide all pages and owner panel
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("visible"));
+    document.getElementById("ownerPanel").style.display = "none";
+    // Show selected page
+    if(id === 'ownerPanel'){
+      document.getElementById("ownerPanel").style.display = "block";
+    } else {
+      document.getElementById(id).classList.add("visible");
+    }
+    if (id === "wishlist") renderList("wishlist");
+    if (id === "cart") renderList("cart");
+  }
 
   function renderProducts() {
     const container = document.getElementById("productList");
@@ -196,11 +386,24 @@
     products.forEach((p, i) => {
       const div = document.createElement("div");
       div.className = "product";
+
+      const stockText = p.inStock ?
+        `<div class="stock-label in-stock">In Stock</div>` :
+        `<div class="stock-label out-stock">Out of Stock</div>`;
+
+      let buyButtonHtml = "";
+      if (p.inStock) {
+        buyButtonHtml = `<button class="buy-btn" onclick="viewProduct(${i})">Buy</button>`;
+      } else {
+        buyButtonHtml = `<button class="buy-btn" disabled>Out of Stock</button>`;
+      }
+
       div.innerHTML = `
         <h2>${p.name}</h2>
         <p>$${p.price.toFixed(2)}</p>
         <p>+ $${p.shipping.toFixed(2)} shipping</p>
-        <button class="buy-btn" onclick="viewProduct(${i})">Buy</button>
+        ${stockText}
+        ${buyButtonHtml}
       `;
       container.appendChild(div);
     });
@@ -208,15 +411,24 @@
 
   function viewProduct(index) {
     const p = products[index];
+    const stockLabel = p.inStock ?
+      `<div class="stock-label in-stock">In Stock</div>` :
+      `<div class="stock-label out-stock">Out of Stock</div>`;
+
+    const buyBtnHtml = p.inStock ?
+      `<button class="buy-btn" onclick="addToList('cart', ${index})">Add to Cart</button>` :
+      `<button class="buy-btn" disabled>Out of Stock</button>`;
+
     document.getElementById("productDetail").innerHTML = `
       <div class="left">
         <h2>${p.name}</h2>
         <p><strong>Price:</strong> $${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
         <p>${p.desc}</p>
+        ${stockLabel}
       </div>
       <div class="right">
         <button class="wishlist-btn" onclick="addToList('wishlist', ${index})">Add to Wishlist</button>
-        <button class="cart-btn" onclick="addToList('cart', ${index})">Add to Cart</button>
+        ${buyBtnHtml}
       </div>
     `;
     showPage("productPage");
@@ -226,8 +438,13 @@
     const item = products[index];
     const list = type === "wishlist" ? wishlist : cart;
     if (!list.find(p => p.name === item.name)) {
+      if (type === "cart" && !item.inStock) {
+        alert("Sorry, this product is out of stock.");
+        return;
+      }
       list.push(item);
       renderList(type);
+      alert(type === "wishlist" ? "Added to wishlist ✔️" : "Added to cart ✔️");
     } else {
       alert("Already added!");
     }
@@ -250,13 +467,83 @@
     renderList(type);
   }
 
-  function showPage(id) {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("visible"));
-    document.getElementById(id).classList.add("visible");
-    if (id === "wishlist") renderList("wishlist");
-    if (id === "cart") renderList("cart");
+  // Owner button and password modal logic
+  const ownerBtn = document.getElementById("ownerBtn");
+  const passwordModal = document.getElementById("passwordModal");
+  const passwordInput = document.getElementById("passwordInput");
+
+  ownerBtn.addEventListener("click", () => {
+    passwordInput.value = "";
+    passwordModal.style.display = "flex";
+    passwordInput.focus();
+  });
+
+  function pressKey(num) {
+    if (passwordInput.value.length < 6) {
+      passwordInput.value += num;
+    }
+  }
+  function backspaceKey() {
+    passwordInput.value = passwordInput.value.slice(0, -1);
+  }
+  function cancelPassword() {
+    passwordModal.style.display = "none";
+    passwordInput.value = "";
+  }
+  function submitPassword() {
+    const password = passwordInput.value;
+    if (password === "567812") {
+      passwordModal.style.display = "none";
+      openOwnerPanel();
+    } else {
+      alert("Incorrect password.");
+      passwordInput.value = "";
+      passwordInput.focus();
+    }
   }
 
+  // Owner panel functions
+  function openOwnerPanel() {
+    showPage('ownerPanel');
+    renderOwnerList();
+  }
+
+  function closeOwnerPanel() {
+    showPage('home');
+    renderProducts();
+  }
+
+  function renderOwnerList() {
+    const ul = document.getElementById("ownerProductList");
+    ul.innerHTML = "";
+    products.forEach((p, i) => {
+      const li = document.createElement("li");
+      const btnClass = p.inStock ? "in-stock-btn" : "out-stock-btn";
+      const btnText = p.inStock ? "Put Out of Stock" : "Put In Stock";
+
+      li.innerHTML = `
+        ${p.name}
+        <button class="toggle-stock ${btnClass}" onclick="toggleStock(${i}, this)">${btnText}</button>
+      `;
+      ul.appendChild(li);
+    });
+  }
+
+  function toggleStock(index, btn) {
+    products[index].inStock = !products[index].inStock;
+    if (products[index].inStock) {
+      btn.textContent = "Put Out of Stock";
+      btn.classList.remove("out-stock-btn");
+      btn.classList.add("in-stock-btn");
+    } else {
+      btn.textContent = "Put In Stock";
+      btn.classList.remove("in-stock-btn");
+      btn.classList.add("out-stock-btn");
+    }
+    renderProducts();
+  }
+
+  // Initial render on load
   renderProducts();
 </script>
 
