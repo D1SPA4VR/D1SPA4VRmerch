@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>D1SPA4VR Merch</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
   <style>
     body {
       margin: 0;
@@ -11,6 +13,7 @@
       color: white;
       font-family: Arial, sans-serif;
     }
+
     header {
       background: #111;
       padding: 1rem;
@@ -20,22 +23,7 @@
       color: #ff0033;
       text-shadow: 0 0 10px #ff0033;
     }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      background: #1e1e1e;
-      padding: 1rem;
-      gap: 1rem;
-    }
-    .tabs button {
-      background: #ff0033;
-      color: white;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+
     .container {
       display: flex;
       flex-wrap: wrap;
@@ -43,114 +31,99 @@
       gap: 2rem;
       padding: 2rem;
     }
+
     .product {
       background: #444;
       border-radius: 10px;
       padding: 1rem;
       width: 220px;
       text-align: center;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      position: relative;
     }
-    .product:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px red;
-    }
+
     .product h2 {
       color: #ff0033;
-      font-size: 1.2rem;
     }
+
     .stock-label {
       font-weight: bold;
       margin-top: 0.3rem;
     }
+
     .in-stock {
       color: #28a745;
     }
+
     .out-stock {
       color: #ff4444;
     }
-    .buy-btn {
-      background-color: #28a745;
+
+    .owner-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #ff0033;
       color: white;
       border: none;
-      padding: 0.4rem 1rem;
-      border-radius: 5px;
+      border-radius: 10px;
+      padding: 1rem;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 0.5rem;
+      z-index: 1001;
     }
+
+    #ownerPanel {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 300px;
+      height: 100%;
+      background-color: #1e1e1e;
+      border-left: 2px solid #ff0033;
+      padding: 1rem;
+      overflow-y: auto;
+      transition: right 0.3s ease;
+      z-index: 1000;
+    }
+
+    #ownerPanel.open {
+      right: 0;
+    }
+
+    #ownerPanel h3 {
+      color: #ff0033;
+      margin-top: 0;
+    }
+
+    #ownerPanel button.toggle {
+      margin-top: 5px;
+      margin-bottom: 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.3rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .buy-btn {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+    }
+
     .buy-btn:disabled {
       background-color: #555;
       cursor: not-allowed;
     }
-    .page {
-      display: none;
-    }
-    .visible {
-      display: block;
-    }
-    .footer {
-      text-align: center;
-      padding: 1rem;
-      color: #ccc;
-      font-size: 0.9rem;
-    }
-    .product-detail {
-      display: flex;
-      justify-content: space-between;
-      background: #3b3b3b;
-      padding: 2rem;
-      margin: 2rem;
-      border-radius: 10px;
-    }
-    .product-detail .left {
-      max-width: 60%;
-    }
-    .product-detail .right {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      justify-content: center;
-    }
-    .product-detail button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
+
+    .product-name-label {
       font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .wishlist-btn {
-      background-color: #ff9933;
-      color: #000;
-    }
-    .cart-btn {
-      background-color: #007bff;
-      color: #fff;
-    }
-    .list-page ul {
-      list-style: none;
-      padding: 2rem;
-    }
-    .list-page li {
-      background: #444;
-      padding: 0.8rem 1rem;
-      border-radius: 5px;
-      margin-bottom: 0.5rem;
-      display: flex;
-      justify-content: space-between;
-    }
-    .remove {
-      color: red;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .back-btn {
-      color: #ccc;
-      margin: 2rem;
-      display: inline-block;
-      text-decoration: none;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -158,131 +131,114 @@
 
 <header>D1SPA4VR Merch</header>
 
-<div class="tabs">
-  <button onclick="showPage('home')">🏠 Home</button>
-  <button onclick="showPage('wishlist')">💖 Wishlist</button>
-  <button onclick="showPage('cart')">🛒 Cart</button>
-</div>
+<div class="container" id="productList"></div>
 
-<div id="home" class="page visible">
-  <div class="container" id="productList"></div>
-  <div class="footer">All prices USD. Plus realistic shipping & tax.</div>
-</div>
+<!-- Owner Button -->
+<button class="owner-button" onclick="requestOwnerAccess()">Owner Button</button>
 
-<div id="productPage" class="page">
-  <div class="product-detail" id="productDetail"></div>
-  <a href="#" class="back-btn" onclick="showPage('home')">← Back to home</a>
-</div>
-
-<div id="wishlist" class="page list-page">
-  <ul id="wishlistItems"></ul>
-</div>
-
-<div id="cart" class="page list-page">
-  <ul id="cartItems"></ul>
+<!-- Owner Panel (Sidebar) -->
+<div id="ownerPanel">
+  <h3>🛠️ Owner Panel</h3>
+  <div id="ownerControls"></div>
 </div>
 
 <script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBDeI1Vtvnwpv4GPJfH9oqrhoD1BVVqebk",
+    authDomain: "d1spa4vr-merch.firebaseapp.com",
+    databaseURL: "https://d1spa4vr-merch-default-rtdb.firebaseio.com",
+    projectId: "d1spa4vr-merch",
+    storageBucket: "d1spa4vr-merch.appspot.com",
+    messagingSenderId: "862122277887",
+    appId: "1:862122277887:web:9db63669e5b2dac4f445ca",
+    measurementId: "G-SQW1MKTQQ9"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Product list
   const products = [
-    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 1.50, inStock: true },
-    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 1.20, inStock: true },
-    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 1.80, inStock: true },
-    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 1.70, inStock: true },
-    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 1.60, inStock: true },
-    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 1.10, inStock: true }
+    { name: "✏️ Custom Pencil", price: 5, shipping: 1.5 },
+    { name: "🔖 Bookmark", price: 3, shipping: 1.2 },
+    { name: "🎨 Sticker Pack 10", price: 10, shipping: 1.8 },
+    { name: "🖼️ Sticker Pack 8", price: 8, shipping: 1.7 },
+    { name: "🧷 Sticker Pack 4", price: 4, shipping: 1.6 },
+    { name: "🧃 Sticker", price: 2, shipping: 1.1 }
   ];
 
-  let wishlist = [];
-  let cart = [];
-
-  function showPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
-    document.getElementById(id).classList.add('visible');
-    if (id === "wishlist") renderList("wishlist");
-    if (id === "cart") renderList("cart");
-  }
+  let stockStatus = {};
 
   function renderProducts() {
     const container = document.getElementById("productList");
     container.innerHTML = "";
     products.forEach((p, i) => {
-      const stockText = p.inStock ?
-        `<div class="stock-label in-stock">In Stock</div>` :
-        `<div class="stock-label out-stock">Out of Stock</div>`;
-
-      const buyBtn = p.inStock ?
-        `<button class="buy-btn" onclick="viewProduct(${i})">Buy</button>` :
-        `<button class="buy-btn" disabled>Out of Stock</button>`;
-
+      const inStock = stockStatus[i];
       const card = document.createElement("div");
       card.className = "product";
       card.innerHTML = `
         <h2>${p.name}</h2>
-        <p>$${p.price.toFixed(2)}</p>
-        <p>+ $${p.shipping.toFixed(2)} shipping</p>
-        ${stockText}
-        ${buyBtn}
+        <p>$${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
+        <div class="stock-label ${inStock ? 'in-stock' : 'out-stock'}">${inStock ? 'In Stock' : 'Out of Stock'}</div>
+        <button class="buy-btn" ${inStock ? "" : "disabled"}>Buy</button>
       `;
       container.appendChild(card);
     });
   }
 
-  function viewProduct(i) {
-    const p = products[i];
-    const stockText = p.inStock ?
-      `<div class="stock-label in-stock">In Stock</div>` :
-      `<div class="stock-label out-stock">Out of Stock</div>`;
-
-    const buyBtn = p.inStock ?
-      `<a href="https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform" target="_blank" class="buy-btn">Buy Now</a>` :
-      `<button class="buy-btn" disabled>Out of Stock</button>`;
-
-    document.getElementById("productDetail").innerHTML = `
-      <div class="left">
-        <h2>${p.name}</h2>
-        <p><strong>Price:</strong> $${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
-        <p>${p.desc}</p>
-        ${stockText}
-      </div>
-      <div class="right">
-        <button class="wishlist-btn" onclick="addToList('wishlist', ${i})">Add to Wishlist</button>
-        <button class="cart-btn" onclick="addToList('cart', ${i})">Add to Cart</button>
-        ${buyBtn}
-      </div>
-    `;
-    showPage("productPage");
-  }
-
-  function addToList(type, index) {
-    const list = (type === "wishlist" ? wishlist : cart);
-    const item = products[index];
-    if (!list.find(p => p.name === item.name)) {
-      list.push(item);
-      renderList(type);
-      alert(`Added to ${type} ✔️`);
+  function requestOwnerAccess() {
+    const pass = prompt("Enter owner password:");
+    if (pass === "567812") {
+      toggleOwnerPanel(true);
     } else {
-      alert("Already added!");
+      alert("Wrong password.");
     }
   }
 
-  function renderList(type) {
-    const list = (type === "wishlist" ? wishlist : cart);
-    const ul = document.getElementById(type + "Items");
-    ul.innerHTML = "";
-    list.forEach((p, i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `${p.name} <span class="remove" onclick="removeFromList('${type}', ${i})">❌</span>`;
-      ul.appendChild(li);
+  function toggleOwnerPanel(open) {
+    const panel = document.getElementById("ownerPanel");
+    const controls = document.getElementById("ownerControls");
+    panel.classList.toggle("open", open);
+    controls.innerHTML = "";
+
+    products.forEach((p, i) => {
+      const label = document.createElement("div");
+      label.className = "product-name-label";
+      label.textContent = p.name;
+
+      const btn = document.createElement("button");
+      btn.className = "toggle";
+      btn.textContent = stockStatus[i] ? "Put Out of Stock" : "Put In Stock";
+      btn.onclick = () => {
+        const newStatus = !stockStatus[i];
+        db.ref("stockStatus/" + i).set(newStatus);
+      };
+
+      controls.appendChild(label);
+      controls.appendChild(btn);
     });
   }
 
-  function removeFromList(type, index) {
-    if (type === "wishlist") wishlist.splice(index, 1);
-    if (type === "cart") cart.splice(index, 1);
-    renderList(type);
-  }
+  // Sync from Firebase
+  db.ref("stockStatus").on("value", (snapshot) => {
+    stockStatus = snapshot.val() || {};
+    renderProducts();
+    const panel = document.getElementById("ownerPanel");
+    if (panel.classList.contains("open")) {
+      toggleOwnerPanel(true); // Refresh buttons
+    }
+  });
 
-  renderProducts();
+  // Initialize missing keys
+  db.ref("stockStatus").once("value", (snap) => {
+    const val = snap.val() || {};
+    products.forEach((_, i) => {
+      if (val[i] === undefined) {
+        db.ref("stockStatus/" + i).set(false);
+      }
+    });
+  });
 </script>
 
 </body>
