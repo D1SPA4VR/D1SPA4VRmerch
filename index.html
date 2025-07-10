@@ -1,555 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>D1SPA4VR Merch</title>
-  <style>
-    body {
-      background-color: #2f2f2f;
-      font-family: Arial, sans-serif;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      position: relative;
-      min-height: 100vh;
-    }
-    header {
-      background: #111;
-      color: #ff0033;
-      padding: 1rem;
-      text-align: center;
-      font-size: 2.5rem;
-      font-weight: bold;
-      text-shadow: 0 0 10px #ff0033, 0 0 20px #ff0033;
-    }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: #1e1e1e;
-    }
-    .tabs button {
-      background: #ff0033;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-      padding: 2rem;
-    }
-    .product {
-      background: #444;
-      border-radius: 10px;
-      padding: 1rem;
-      width: 230px;
-      text-align: center;
-      transition: transform 0.2s ease;
-      position: relative;
-    }
-    .product:hover {
-      transform: scale(1.03);
-    }
-    .product h2 {
-      font-size: 1.2rem;
-      color: #ff0033;
-    }
-    .product p {
-      margin: 0.3rem 0;
-    }
-    .buy-btn {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 0.4rem 1rem;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
-    .buy-btn:disabled {
-      background-color: #555 !important;
-      cursor: not-allowed;
-    }
-    .stock-label {
-      font-weight: bold;
-      margin-top: 0.5rem;
-    }
-    .in-stock {
-      color: #28a745;
-    }
-    .out-stock {
-      color: #ff4444;
-    }
-    .page {
-      display: none;
-    }
-    .visible {
-      display: block;
-    }
-    .footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-    .product-detail {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      background: #3b3b3b;
-      padding: 2rem;
-      border-radius: 10px;
-      margin: 2rem;
-    }
-    .product-detail .left {
-      max-width: 60%;
-    }
-    .product-detail .right {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 1rem;
-      min-width: 140px;
-    }
-    .product-detail button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .wishlist-btn {
-      background-color: #ff9933;
-      color: #000;
-    }
-    .cart-btn {
-      background-color: #007bff;
-      color: #fff;
-    }
-    .back-btn {
-      margin: 2rem;
-      display: inline-block;
-      color: #ccc;
-      text-decoration: none;
-    }
-    .list-page ul {
-      list-style: none;
-      padding: 0;
-      margin: 2rem;
-    }
-    .list-page li {
-      background: #444;
-      padding: 0.8rem 1rem;
-      margin-bottom: 0.5rem;
-      border-radius: 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .list-page .remove {
-      color: red;
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    /* Owner button */
-    #ownerBtn {
-      position: fixed;
-      bottom: 15px;
-      right: 15px;
-      background: #ff0033;
-      color: white;
-      font-weight: bold;
-      font-size: 0.75rem;
-      border: none;
-      border-radius: 5px;
-      padding: 6px 10px;
-      cursor: pointer;
-      box-shadow: 0 0 8px #ff0033;
-      z-index: 9999;
-      user-select: none;
-    }
-    /* Owner Panel */
-    #ownerPanel {
-      display: none;
-      padding: 2rem;
-      background: #222;
-      color: white;
-      min-height: 80vh;
-      overflow-y: auto;
-    }
-    #ownerPanel h2 {
-      color: #ff0033;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    #ownerPanel ul {
-      list-style: none;
-      padding: 0;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    #ownerPanel li {
-      background: #444;
-      padding: 1rem;
-      margin-bottom: 0.8rem;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #ownerPanel button.toggle-stock {
-      padding: 0.4rem 1rem;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      color: white;
-    }
-    #ownerPanel button.in-stock-btn {
-      background-color: #28a745;
-    }
-    #ownerPanel button.out-stock-btn {
-      background-color: #ff4444;
-    }
 
-    /* Password modal styles */
-    #passwordModal {
-      display: none;
-      position: fixed;
-      z-index: 10000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.75);
-      align-items: center;
-      justify-content: center;
-    }
-    #passwordBox {
-      background: #222;
-      padding: 2rem;
-      border-radius: 10px;
-      text-align: center;
-      width: 280px;
-      color: white;
-    }
-    #passwordBox h3 {
-      margin-bottom: 1rem;
-      color: #ff0033;
-    }
-    #passwordInput {
-      font-size: 1.5rem;
-      width: 100%;
-      text-align: center;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border-radius: 5px;
-      border: none;
-    }
-    #keypad {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    #keypad button {
-      font-size: 1.5rem;
-      padding: 0.8rem 0;
-      background: #ff0033;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      cursor: pointer;
-      user-select: none;
-      font-weight: bold;
-    }
-    #passwordActions {
-      display: flex;
-      justify-content: space-between;
-    }
-    #passwordActions button {
-      background: #555;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <style>
+    body { background:#2f2f2f; color:#fff; font-family:Arial; margin:0; padding:0; min-height:100vh }
+    header{ background:#111; color:#ff0033; padding:1rem; text-align:center; font-size:2.5rem; text-shadow:0 0 10px #ff0033 }
+    .tabs{ display:flex; justify-content:center; background:#1e1e1e; padding:.8rem }
+    .tabs button{ background:#ff0033; color:#fff; border:none; padding:.6rem 1.2rem; margin:0 .4rem; border-radius:4px; font-weight:bold; cursor:pointer }
+    .footer{ text-align:center; color:#ccc; padding:1rem }
+    .container{ display:flex; flex-wrap:wrap; justify-content:center; gap:1rem; padding:1rem }
+    .product{ background:#444; width:200px; padding:1rem; border-radius:6px; text-align:center; }
+    .product h2{ font-size:1.1rem; color:#ff0033 }
+    .stock-label{ font-weight:bold; margin-top:.5rem }
+    .in-stock{ color:#28a745 }
+    .out-stock{ color:#ff4444 }
+    .buy-btn{ background:#28a745; color:#fff; border:none; padding:.5rem; margin-top:.6rem; border-radius:4px; cursor:pointer }
+    .buy-btn:disabled{ background:#555; cursor:not-allowed }
+    .wishlist-btn, .cart-btn{ padding:.5rem; border:none; border-radius:4px; font-weight:bold; cursor:pointer }
+    .wishlist-btn{ background:#ff9933; color:#000 }
+    .cart-btn{ background:#007bff; color:#fff }
+    .page { display:none }
+    .visible { display:block }
+    .product-detail{ max-width:800px; margin:2rem auto; background:#333; padding:1.5rem; border-radius:6px; display:flex; flex-wrap:wrap; }
+    .product-detail .left{ flex:1 1 40%; padding-right:1rem }
+    .product-detail .right{ flex:1 1 60%; padding-left:1rem }
+    .product-detail h2{ color:#ff0033 }
+    .product-detail p{ margin:.6rem 0 }
+    .product-detail .buttons{ margin-top:1rem; display:flex; gap:.8rem; flex-wrap:wrap }
+    .list-page ul{ list-style:none; padding:1rem }
+    .list-page li{ background:#444; margin:.5rem 0; padding:.6rem; border-radius:4px; display:flex; justify-content:space-between }
+    .list-page .remove{ cursor:pointer; color:red; font-weight:bold }
+    #ownerBtn{ position:fixed; bottom:15px; right:15px; background:#ff0033; color:#fff; padding:.6rem; border:none; border-radius:4px; font-weight:bold; cursor:pointer }
+    #ownerPanel{ display:none; background:#222; padding:1rem; min-height:80vh }
+    #ownerPanel ul{ list-style:none; padding:0 }
+    #ownerPanel li{ background:#444; margin:.5rem 0; padding:.6rem; border-radius:4px; display:flex; justify-content:space-between }
+    .toggle-stock{ padding:.4rem 1rem; border:none; border-radius:4px; font-weight:bold; color:#fff; cursor:pointer }
+    .in-stock-btn{ background:#28a745 }
+    .out-stock-btn{ background:#ff4444 }
+    #pwModal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); align-items:center; justify-content:center }
+    #pwBox{ background:#222; padding:2rem; border-radius:6px; text-align:center }
+    #pwBox input{ font-size:1.4rem; padding:.5rem; width:100%; margin-bottom:1rem; text-align:center; border-radius:4px; border:none }
+    #pwBox button{ padding:.5rem 1rem; margin:.2rem; border:none; border-radius:4px; cursor:pointer }
   </style>
 </head>
 <body>
 
 <header>D1SPA4VR Merch</header>
-
 <div class="tabs">
-  <button onclick="showPage('home')">🏠 Home</button>
-  <button onclick="showPage('wishlist')">💖 Wishlist</button>
-  <button onclick="showPage('cart')">🛒 Cart</button>
+  <button onclick="showPage('home')">Home</button>
+  <button onclick="showPage('wishlist')">Wishlist</button>
+  <button onclick="showPage('cart')">Cart</button>
 </div>
 
-<!-- Home Page -->
 <div id="home" class="page visible">
   <div class="container" id="productList"></div>
-  <div class="footer">All prices USD. Plus tax and shipping. D1 LLC (official company)</div>
+  <div class="footer">All prices USD + tax & shipping</div>
 </div>
 
-<!-- Product Page -->
 <div id="productPage" class="page">
   <div class="product-detail" id="productDetail"></div>
-  <a href="#" class="back-btn" onclick="showPage('home')">← Back to home</a>
+  <button class="back-btn" onclick="showPage('home')">← Back to Products</button>
 </div>
 
-<!-- Wishlist Page -->
-<div id="wishlist" class="page list-page">
-  <ul id="wishlistItems"></ul>
-</div>
+<div id="wishlist" class="page list-page"><ul id="wishlistItems"></ul></div>
+<div id="cart" class="page list-page"><ul id="cartItems"></ul></div>
 
-<!-- Cart Page -->
-<div id="cart" class="page list-page">
-  <ul id="cartItems"></ul>
-</div>
-
-<!-- Owner Panel Page -->
+<button id="ownerBtn">Owner</button>
 <div id="ownerPanel">
-  <h2>Owner Panel - Stock Management</h2>
-  <ul id="ownerProductList"></ul>
-  <a href="#" class="back-btn" onclick="closeOwnerPanel()">← Back to home</a>
+  <h2>Stock Manager</h2><ul id="ownerProductList"></ul>
+  <button onclick="showPage('home')">← Back</button>
 </div>
 
-<!-- Password Modal -->
-<div id="passwordModal">
-  <div id="passwordBox">
-    <h3>Enter Owner Password</h3>
-    <input type="password" id="passwordInput" maxlength="6" autocomplete="off" />
-    <div id="keypad">
-      <button onclick="pressKey('1')">1</button>
-      <button onclick="pressKey('2')">2</button>
-      <button onclick="pressKey('3')">3</button>
-      <button onclick="pressKey('4')">4</button>
-      <button onclick="pressKey('5')">5</button>
-      <button onclick="pressKey('6')">6</button>
-      <button onclick="pressKey('7')">7</button>
-      <button onclick="pressKey('8')">8</button>
-      <button onclick="pressKey('9')">9</button>
-      <button onclick="backspaceKey()">⌫</button>
-      <button onclick="pressKey('0')">0</button>
-      <button onclick="submitPassword()">OK</button>
-    </div>
-    <div id="passwordActions">
-      <button onclick="cancelPassword()">Cancel</button>
-    </div>
+<div id="pwModal">
+  <div id="pwBox">
+    <h3>Owner Password</h3>
+    <input id="passwordInput" type="password" maxlength="6" />
+    <button onclick="submitPwd()">OK</button>
+    <button onclick="cancelPwd()">Cancel</button>
   </div>
 </div>
 
-<button id="ownerBtn" title="Owner Button">Owner</button>
-
 <script>
-  const products = [
-    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 3.50, inStock: false },
-    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 3.50, inStock: false },
-    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 3.50, inStock: false },
-    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 3.50, inStock: false },
-    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 3.50, inStock: false },
-    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 3.50, inStock: false }
-  ];
+  const firebaseConfig = {
+    apiKey: "AIzaSyBDeI1Vtvnwpv4GPJfH9oqrhoD1BVVqebk",
+    authDomain: "d1spa4vr-merch.firebaseapp.com",
+    databaseURL: "https://d1spa4vr-merch-default-rtdb.firebaseio.com",
+    projectId: "d1spa4vr-merch",
+    storageBucket: "d1spa4vr-merch.appspot.com",
+    messagingSenderId: "862122277887",
+    appId: "1:862122277887:web:9db63669e5b2dac4f445ca"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database(), stockPath = 'productsStock';
 
-  let wishlist = [];
-  let cart = [];
+  const products = [
+    { name: "✏️ Custom Pencil", price: 5, desc: "A handmade pencil with your name.", shipping: 3.5, inStock: false },
+    { name: "🔖 Bookmark", price: 3, desc: "A cool bookmark made with care.", shipping: 3.5, inStock: false },
+    { name: "🎨 Sticker Pack 10", price: 10, desc: "10 fun stickers.", shipping: 3.5, inStock: false },
+    { name: "🖼️ Sticker Pack 8", price: 8, desc: "8 stylish stickers.", shipping: 3.5, inStock: false },
+    { name: "🧷 Sticker Pack 4", price: 4, desc: "4 cute stickers.", shipping: 3.5, inStock: false },
+    { name: "🧃 Sticker", price: 2, desc: "Single collectible sticker.", shipping: 3.5, inStock: false }
+  ];
+  let wishlist = [], cart = [];
+
+  db.ref(stockPath).on('value', snap => {
+    const val = snap.val() || {};
+    products.forEach((p, i) => p.inStock = !!val[i]);
+    renderProducts(); if (isOwnerOpen) renderOwnerList();
+  });
 
   function showPage(id) {
-    // Hide all pages and owner panel
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("visible"));
-    document.getElementById("ownerPanel").style.display = "none";
-    // Show selected page
-    if(id === 'ownerPanel'){
-      document.getElementById("ownerPanel").style.display = "block";
-    } else {
-      document.getElementById(id).classList.add("visible");
-    }
-    if (id === "wishlist") renderList("wishlist");
-    if (id === "cart") renderList("cart");
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
+    document.getElementById('ownerPanel').style.display = 'none';
+    document.getElementById(id).classList.add('visible');
   }
 
   function renderProducts() {
-    const container = document.getElementById("productList");
-    container.innerHTML = "";
+    const c = document.getElementById('productList'); c.innerHTML = '';
     products.forEach((p, i) => {
-      const div = document.createElement("div");
-      div.className = "product";
-
-      const stockText = p.inStock ?
-        `<div class="stock-label in-stock">In Stock</div>` :
-        `<div class="stock-label out-stock">Out of Stock</div>`;
-
-      let buyButtonHtml = "";
-      if (p.inStock) {
-        buyButtonHtml = `<button class="buy-btn" onclick="viewProduct(${i})">Buy</button>`;
-      } else {
-        buyButtonHtml = `<button class="buy-btn" disabled>Out of Stock</button>`;
-      }
-
-      div.innerHTML = `
+      const e = document.createElement('div'); e.className = 'product';
+      e.innerHTML = `
         <h2>${p.name}</h2>
-        <p>$${p.price.toFixed(2)}</p>
-        <p>+ $${p.shipping.toFixed(2)} shipping</p>
-        ${stockText}
-        ${buyButtonHtml}
+        <p>$${p.price.toFixed(2)} + $${p.shipping.toFixed(2)}</p>
+        <div class="stock-label ${p.inStock ? 'in-stock' : 'out-stock'}">
+          ${p.inStock ? 'In Stock' : 'Out of Stock'}
+        </div>
+        <button class="buy-btn" ${!p.inStock ? 'disabled' : ''} onclick="openProduct(${i})">View</button>
       `;
-      container.appendChild(div);
+      c.appendChild(e);
     });
   }
 
-  function viewProduct(index) {
-    const p = products[index];
-    const stockLabel = p.inStock ?
-      `<div class="stock-label in-stock">In Stock</div>` :
-      `<div class="stock-label out-stock">Out of Stock</div>`;
-
-    const buyBtnHtml = p.inStock ? `
-      <button class="buy-btn" onclick="addToList('cart', ${index})">Add to Cart</button>
-      <button class="buy-btn" style="margin-top:8px; background:#ff0033;" 
-        onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=header'">
-        Buy
-      </button>
-    ` : `<button class="buy-btn" disabled>Out of Stock</button>`;
-
-    document.getElementById("productDetail").innerHTML = `
+  function openProduct(i) {
+    const p = products[i];
+    document.getElementById('productDetail').innerHTML = `
       <div class="left">
         <h2>${p.name}</h2>
-        <p><strong>Price:</strong> $${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
+        <p><strong>$${p.price.toFixed(2)}</strong> + $${p.shipping.toFixed(2)}</p>
         <p>${p.desc}</p>
-        ${stockLabel}
+        <div class="stock-label ${p.inStock ? 'in-stock' : 'out-stock'}">${p.inStock ? 'In Stock' : 'Out of Stock'}</div>
       </div>
       <div class="right">
-        <button class="wishlist-btn" onclick="addToList('wishlist', ${index})">Add to Wishlist</button>
-        ${buyBtnHtml}
-      </div>
-    `;
-    showPage("productPage");
+        <div class="buttons">
+          <button class="wishlist-btn" onclick="addToList('wishlist',${i})">Add to Wishlist</button>
+          <button class="cart-btn" onclick="addToList('cart',${i})">Add to Cart</button>
+          <button class="buy-btn" onclick="buyNow(${i})" ${!p.inStock ? 'disabled' : ''}>Buy Now</button>
+        </div>
+      </div>`;
+    showPage('productPage');
   }
 
-  function addToList(type, index) {
-    const item = products[index];
-    const list = type === "wishlist" ? wishlist : cart;
-    if (!list.find(p => p.name === item.name)) {
-      if (type === "cart" && !item.inStock) {
-        alert("Sorry, this product is out of stock.");
-        return;
-      }
-      list.push(item);
-      renderList(type);
-      alert(type === "wishlist" ? "Added to wishlist ✔️" : "Added to cart ✔️");
-    } else {
-      alert("Already added!");
-    }
+  function addToList(type, i) {
+    const list = (type === 'wishlist' ? wishlist : cart), item = products[i];
+    if (!list.includes(item)) {
+      if (type === 'cart' && !item.inStock) { alert('Out of Stock'); return }
+      list.push(item); renderList(type);
+      alert(type + ' added ✅');
+    } else alert('Already added');
   }
 
   function renderList(type) {
-    const ul = document.getElementById(type + "Items");
-    const list = type === "wishlist" ? wishlist : cart;
-    ul.innerHTML = "";
-    list.forEach((item, i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `${item.name} <span class="remove" onclick="removeFromList('${type}', ${i})">❌</span>`;
+    const list = (type === 'wishlist' ? wishlist : cart);
+    const ul = document.getElementById(type + 'Items');
+    ul.innerHTML = '';
+    list.forEach((itm, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `${itm.name} <span class="remove" onclick="removeFromList('${type}',${i})">❌</span>`;
       ul.appendChild(li);
     });
   }
 
-  function removeFromList(type, index) {
-    if (type === "wishlist") wishlist.splice(index, 1);
-    if (type === "cart") cart.splice(index, 1);
-    renderList(type);
+  function removeFromList(type, i) {
+    const list = (type === 'wishlist' ? wishlist : cart);
+    list.splice(i, 1); renderList(type);
   }
 
-  // Owner button and password modal logic
-  const ownerBtn = document.getElementById("ownerBtn");
-  const passwordModal = document.getElementById("passwordModal");
-  const passwordInput = document.getElementById("passwordInput");
-
-  ownerBtn.addEventListener("click", () => {
-    passwordInput.value = "";
-    passwordModal.style.display = "flex";
-    passwordInput.focus();
-  });
-
-  function pressKey(num) {
-    if (passwordInput.value.length < 6) {
-      passwordInput.value += num;
-    }
-  }
-  function backspaceKey() {
-    passwordInput.value = passwordInput.value.slice(0, -1);
-  }
-  function cancelPassword() {
-    passwordModal.style.display = "none";
-    passwordInput.value = "";
-  }
-  function submitPassword() {
-    const password = passwordInput.value;
-    if (password === "567812") {
-      passwordModal.style.display = "none";
-      openOwnerPanel();
-    } else {
-      alert("Incorrect password.");
-      passwordInput.value = "";
-      passwordInput.focus();
-    }
+  function buyNow(i) {
+    window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLSe35Twu6jvan1QnK4Ad0gVS9BpaoidfQrsENpCymCoPtUJo8Q/viewform?usp=header';
   }
 
-  // Owner panel functions
-  function openOwnerPanel() {
-    showPage('ownerPanel');
-    renderOwnerList();
+  let isOwnerOpen = false;
+  document.getElementById('ownerBtn').onclick = () => { document.getElementById('pwModal').style.display = 'flex'; }
+  function submitPwd() {
+    if (document.getElementById('passwordInput').value === '567812') {
+      document.getElementById('pwModal').style.display = 'none';
+      document.getElementById('ownerPanel').style.display = 'block';
+      showPage('ownerPanel'); isOwnerOpen = true; renderOwnerList();
+    } else alert('Wrong password');
   }
-
-  function closeOwnerPanel() {
-    showPage('home');
-    renderProducts();
-  }
+  function cancelPwd() { document.getElementById('pwModal').style.display = 'none'; }
 
   function renderOwnerList() {
-    const ul = document.getElementById("ownerProductList");
-    ul.innerHTML = "";
+    const ul = document.getElementById('ownerProductList'); ul.innerHTML = '';
     products.forEach((p, i) => {
-      const li = document.createElement("li");
-      const btnClass = p.inStock ? "in-stock-btn" : "out-stock-btn";
-      const btnText = p.inStock ? "Put Out of Stock" : "Put In Stock";
-
-      li.innerHTML = `
-        ${p.name}
-        <button class="toggle-stock ${btnClass}" onclick="toggleStock(${i}, this)">${btnText}</button>
-      `;
+      const li = document.createElement('li');
+      li.innerHTML = `${p.name}
+        <button class="toggle-stock ${p.inStock ? 'in-stock-btn' : 'out-stock-btn'}" onclick="toggleStock(${i})">
+          ${p.inStock ? 'Mark Out of Stock' : 'Mark In Stock'}
+        </button>`;
       ul.appendChild(li);
     });
   }
 
-  function toggleStock(index, btn) {
-    products[index].inStock = !products[index].inStock;
-    if (products[index].inStock) {
-      btn.textContent = "Put Out of Stock";
-      btn.classList.remove("out-stock-btn");
-      btn.classList.add("in-stock-btn");
-    } else {
-      btn.textContent = "Put In Stock";
-      btn.classList.remove("in-stock-btn");
-      btn.classList.add("out-stock-btn");
-    }
-    renderProducts();
+  function toggleStock(i) {
+    const newVal = !products[i].inStock;
+    db.ref(`${stockPath}/${i}`).set(newVal);
   }
 
-  // Initial render on load
   renderProducts();
 </script>
-
 </body>
 </html>
