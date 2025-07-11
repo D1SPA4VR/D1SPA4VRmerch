@@ -284,13 +284,13 @@
       card.className = "product";
       card.onclick = () => showProductDetail(i);
       const inStock = stockStatus[i];
-      card.innerHTML = 
+      card.innerHTML = `
         <h2>${p.name}</h2>
         <p>$${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
         <div class="stock-label ${inStock ? 'in-stock' : 'out-stock'}">
           ${inStock ? 'In Stock' : 'Out of Stock'}
         </div>
-      ;
+      `;
       container.appendChild(card);
     });
   }
@@ -298,7 +298,7 @@
   function showProductDetail(i) {
     const p = products[i];
     const inStock = stockStatus[i];
-    document.getElementById("productDetail").innerHTML = 
+    document.getElementById("productDetail").innerHTML = `
       <div class="product-detail">
         <h2>${p.name}</h2>
         <p><strong>Price:</strong> $${p.price.toFixed(2)} + $${p.shipping.toFixed(2)} shipping</p>
@@ -307,7 +307,7 @@
         <button class="buy-btn" onclick="buyProduct()" ${inStock ? '' : 'disabled'}>${inStock ? 'Buy Now' : 'Out of Stock'}</button>
       </div>
       <button onclick="showPage('home')" style="margin-left:2rem">&larr; Back</button>
-    ;
+    `;
     showPage("productDetail");
   }
 
@@ -327,7 +327,7 @@
     ul.innerHTML = "";
     wishlist.forEach((p, i) => {
       const li = document.createElement("li");
-      li.innerHTML = ${p.name} <span class='remove' onclick='removeFromWishlist(${i})'>❌</span>;
+      li.innerHTML = `${p.name} <span class='remove' onclick='removeFromWishlist(${i})'>❌</span>`;
       ul.appendChild(li);
     });
   }
