@@ -96,6 +96,22 @@
       z-index: 1001;
     }
 
+    .pandyvr-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: #00ff00;
+      color: black;
+      font-weight: bold;
+      border: none;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 0 15px #00ff00;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
     #ownerPanel {
       position: fixed;
       top: 0;
@@ -201,7 +217,11 @@
 
 <div id="productDetail" class="page" style="display:none"></div>
 
+<!-- Buttons -->
 <button class="owner-button" onclick="requestOwnerAccess()">Owner Button</button>
+<a href="https://merchdp.github.io/" target="_blank" class="pandyvr-button">PANDYVR</a>
+
+<!-- Owner Panel -->
 <div id="ownerPanel">
   <button class="close-panel" onclick="toggleOwnerPanel(false)">&times;</button>
   <h3>🛠️ Owner Panel</h3>
