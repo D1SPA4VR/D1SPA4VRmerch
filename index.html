@@ -1,200 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>D1SPA4VR Merch</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
-  <style>
-    /* styles remain unchanged */
-  </style>
-</head>
-<body>
-
-<header>D1SPA4VR Merch</header>
-<div class="tabs">
-  <button onclick="showPage('home')">Home</button>
-  <button onclick="showPage('wishlist')">Wishlist</button>
-</div>
-
-<div id="home" class="page">
-  <div class="container" id="productList"></div>
-</div>
-
-<div id="wishlist" class="page wishlist-page" style="display:none">
-  <ul id="wishlistItems"></ul>
-</div>
-
-<div id="productDetail" class="page" style="display:none"></div>
-
-<button class="owner-button" onclick="requestOwnerAccess()">Owner Button</button>
-<a href="https://merchdp.github.io/" class="external-button" target="_blank">Go to Site</a>
-<div id="ownerPanel">
-  <button class="close-panel" onclick="toggleOwnerPanel(false)">&times;</button>
-  <h3>🛠️ Owner Panel</h3>
-  <div id="ownerControls"></div>
-  <h4 style="color:#fff;margin-top:1rem">Add New Product</h4>
-  <input type="text" id="newName" placeholder="Name" style="width:100%;margin:0.3rem 0" />
-  <input type="text" id="newDesc" placeholder="Description" style="width:100%;margin:0.3rem 0" />
-  <input type="number" id="newPrice" placeholder="Price" style="width:100%;margin:0.3rem 0" />
-  <input type="number" id="newShipping" placeholder="Shipping" style="width:100%;margin:0.3rem 0" />
-  <button onclick="addProduct()" style="margin-top:0.5rem;background:#28a745;color:white;padding:0.5rem 1rem;border:none;border-radius:5px;cursor:pointer">Add Product</button>
-</div>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBDeI1Vtvnwpv4GPJfH9oqrhoD1BVVqebk",
-  authDomain: "d1spa4vr-merch.firebaseapp.com",
-  databaseURL: "https://d1spa4vr-merch-default-rtdb.firebaseio.com",
-  projectId: "d1spa4vr-merch",
-  storageBucket: "d1spa4vr-merch.appspot.com",
-  messagingSenderId: "862122277887",
-  appId: "1:862122277887:web:9db63669e5b2dac4f445ca"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-let products = [];
-let stockStatus = {};
-let wishlist = [];
-
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-  document.getElementById(id).style.display = 'block';
-  if (id === 'wishlist') renderWishlist();
-}
-
-function renderProducts() {
-  const container = document.getElementById("productList");
-  container.innerHTML = "";
-  products.forEach((p, i) => {
-    const inStock = stockStatus[i];
-    const card = document.createElement("div");
-    card.className = "product";
-    card.onclick = () => showProductDetail(i);
-    card.innerHTML = `
-      <h2>${p.name}</h2>
-      <p>$${p.price?.toFixed(2) ?? 0} + $${p.shipping?.toFixed(2) ?? 0} shipping</p>
-      <div class="stock-label ${inStock ? 'in-stock' : 'out-stock'}">
-        ${inStock ? 'In Stock' : 'Out of Stock'}
-      </div>
-    `;
-    container.appendChild(card);
-  });
-}
-
-function showProductDetail(i) {
-  const p = products[i];
-  document.getElementById("productDetail").innerHTML = `
-    <div class="product-detail">
-      <h2>${p.name}</h2>
-      <p><strong>Price:</strong> $${p.price?.toFixed(2) ?? 0} + $${p.shipping?.toFixed(2) ?? 0} shipping</p>
-      <p>${p.desc}</p>
-      <button class="wishlist-btn" onclick="addToWishlist(${i})">Add to Wishlist</button>
-      <a href="https://forms.gle/LqTLJ4DcNXaRMsbbA" target="_blank" class="buy-btn">Buy Now</a>
-    </div>
-    <button onclick="showPage('home')" style="margin-left:2rem">&larr; Back</button>
-  `;
-  showPage("productDetail");
-}
-
-function addToWishlist(index) {
-  const item = products[index];
-  if (!wishlist.find(p => p.name === item.name)) {
-    wishlist.push(item);
-    alert("Added to wishlist ✔️");
-  } else {
-    alert("Already in wishlist.");
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>D1SPA4VR Merch</title>
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+<style>
+  body {
+    margin: 0;
+    background: #2f2f2f;
+    color: white;
+    font-family: Arial, sans-serif;
   }
-}
-
-function renderWishlist() {
-  const ul = document.getElementById("wishlistItems");
-  ul.innerHTML = "";
-  wishlist.forEach((p, i) => {
-    const li = document.createElement("li");
-    li.innerHTML = `${p.name} <span class='remove' onclick='removeFromWishlist(${i})'>❌</span>`;
-    ul.appendChild(li);
-  });
-}
-
-function removeFromWishlist(index) {
-  wishlist.splice(index, 1);
-  renderWishlist();
-}
-
-function requestOwnerAccess() {
-  const pass = prompt("Enter owner password:");
-  if (pass === "567812") toggleOwnerPanel(true);
-  else alert("Wrong password.");
-}
-
-function toggleOwnerPanel(open) {
-  document.getElementById("ownerPanel").classList.toggle("open", open);
-  if (open) renderOwnerControls();
-}
-
-function renderOwnerControls() {
-  const controls = document.getElementById("ownerControls");
-  controls.innerHTML = "";
-  products.forEach((p, i) => {
-    const btn = document.createElement("button");
-    btn.className = "toggle";
-    btn.textContent = stockStatus[i] ? "Put Out of Stock" : "Put In Stock";
-    btn.onclick = () => db.ref("stockStatus/" + i).set(!stockStatus[i]);
-
-    const label = document.createElement("div");
-    label.textContent = p.name;
-    controls.appendChild(label);
-    controls.appendChild(btn);
-  });
-}
-
-function addProduct() {
-  const name = document.getElementById("newName").value;
-  const desc = document.getElementById("newDesc").value;
-  const price = parseFloat(document.getElementById("newPrice").value);
-  const shipping = parseFloat(document.getElementById("newShipping").value);
-  if (!name || isNaN(price) || isNaN(shipping)) return alert("Please fill out all fields.");
-
-  products.push({ name, desc, price, shipping });
-  stockStatus[products.length - 1] = false;
-  db.ref("products").set(products);
-  db.ref("stockStatus").set(stockStatus);
-  renderProducts();
-  renderOwnerControls();
-  alert("Product added!");
-}
-
-// Load products and stock from Firebase
-function loadInitialData() {
-  db.ref("products").once("value").then(snap => {
-    products = snap.val() || [];
-    if (!products.length) {
-      products = [
-        { name: "✏️ Custom Pencil", desc: "Handmade with your name.", price: 5, shipping: 1.5 },
-        { name: "🔖 Bookmark", desc: "Cool bookmark made with care.", price: 3, shipping: 1.2 },
-        { name: "🎨 Sticker Pack 10", desc: "10 fun stickers.", price: 10, shipping: 1.8 },
-        { name: "🖼️ Sticker Pack 8", desc: "8 stylish stickers.", price: 8, shipping: 1.7 },
-        { name: "🧷 Sticker Pack 4", desc: "4 cute stickers.", price: 4, shipping: 1.6 },
-        { name: "🧃 Sticker", desc: "Single collectible sticker.", price: 2, shipping: 1.1 }
-      ];
-      db.ref("products").set(products);
+  header {
+    background: #111;
+    padding: 1rem;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ff0033;
+    text-shadow: 0 0 10px #ff0033;
+  }
+  .tabs {
+    display: flex;
+    justify-content: center;
+    background: #1e1e1e;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .tabs button {
+    background: #ff0033;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  .product {
+    background: #444;
+    border-radius: 10px;
+    padding: 1rem;
+    width: 220px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .product:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #ff0033;
+  }
+  .product h2 {
+    color: #ff0033;
+  }
+  .stock-label {
+    font-weight: bold;
+    margin-top: 0.3rem;
+  }
+  .in-stock {
+    color: #28a745;
+  }
+  .out-stock {
+    color: #ff4444;
+  }
+  .owner-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff0033;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+  }
+  #ownerPanel {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 300px;
+    height: 100%;
+    background-color: #1e1e1e;
+    border-left: 2px solid #ff0033;
+    padding: 1rem;
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    z-index: 1000;
+  }
+  #ownerPanel.open {
+    right: 0;
+  }
+  #ownerPanel h3 {
+    color: #ff0033;
+    margin-top: 0;
+  }
+  .close-panel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #ff0033;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .toggle {
+    margin: 5px 0 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.3rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .wishlist-page ul {
+    list-style: none;
+    padding: 2rem;
+  }
+  .wishlist-page li {
+    background: #444;
+    padding: 0.8rem 1rem;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  .remove {
+    color: red;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .product-detail {
+    padding: 2rem;
+    margin: 2rem;
+    background: #3a3a3a;
+    border-radius: 10px;
+  }
+  .buy-btn, .wishlist-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 1rem;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+  }
+  .buy-btn {
+    background: #28a745;
+    color: white;
+  }
+  .buy-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+  }
+  .wishlist-btn {
+    background: #ffa500;
+    color: black;
+  }
+  #pandyvr-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #00ff00;
+    color: black;
+    border: none;
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow:
+      0 0 8px #00ff00,
+      0 0 20px #00ff00,
+      0 0 30px #00ff00,
+      0 0 40px #00ff00;
+    animation: glow 2s infinite alternate;
+    z-index: 1001;
+    text-decoration: none;
+    display: inline-block;
+  }
+  @keyframes glow {
+    from {
+      box-shadow:
+        0 0 8px #00ff00,
+        0 0 20px #00ff00,
+        0 0 30px #00ff00,
+        0 0 40px #00ff00;
     }
-    renderProducts();
-  });
-  db.ref("stockStatus").on("value", snap => {
-    stockStatus = snap.val() || {};
-    renderProducts();
-    if (document.getElementById("ownerPanel").classList.contains("open")) {
-      renderOwnerControls();
+    to {
+      box-shadow:
+        0 0 4px #00ff00,
+        0 0 10px #00ff00,
+        0 0 15px #00ff00,
+        0 0 20px #00ff00;
     }
-  });
-}
-
-loadInitialData();
-showPage("home");
-</script>
-</body>
-</html>
+  }
+</style>
+</head>
