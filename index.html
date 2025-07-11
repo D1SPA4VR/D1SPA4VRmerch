@@ -57,6 +57,12 @@
       width: 220px;
       text-align: center;
       cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .product:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #ff0033;
     }
 
     .product h2 {
@@ -177,7 +183,6 @@
 <body>
 
 <header>D1SPA4VR Merch</header>
-
 <div class="tabs">
   <button onclick="showPage('home')">Home</button>
   <button onclick="showPage('wishlist')">Wishlist</button>
@@ -210,7 +215,6 @@
     messagingSenderId: "862122277887",
     appId: "1:862122277887:web:9db63669e5b2dac4f445ca"
   };
-
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
